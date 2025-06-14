@@ -7,9 +7,9 @@ if [[ $# -ne 3 ]]; then
 fi
 
 USERNAME="$1"
-ZEROTIER_NETWORK_ID="$2"
-USER_PASSWORD="$3"
-ROOT_PASSWORD="Root123!"  # Optional: can be parameterized later
+USER_PASSWORD="$2"
+ROOT_PASSWORD="$3"
+ZEROTIER_NETWORK_ID="$4"
 
 exec > >(tee /root/postclone.log) 2>&1
 echo "[INFO] Starting setup for $USERNAME at $(date)"
