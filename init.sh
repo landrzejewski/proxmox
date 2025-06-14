@@ -15,13 +15,19 @@ if [ ! -f "$CONFIG_FILE" ]; then
   exit 1
 fi
 
-# === Parse config.yml ===
-ZEROTIER_NETWORK_ID=$(grep 'id:' "$CONFIG_FILE" | awk '{print $2}')
-ROOT_PASSWORD=$(grep 'password:' "$CONFIG_FILE" | head -1 | awk '{print $2}')
-USER_PASSWORD=$(awk "/username: $USERNAME/{getline; print \$2}" "$CONFIG_FILE")
+# === Parse global config values ===
+ZEROTIER_NETWORK_ID=$(grep -m1 '^  id:' "$CONFIG_FILE" | awk '{print $2}')
+ROOT_PASSWORD=$(grep -m1 '^  password:' "$CONFIG_FILE" | awk '{print $2}')
+
+# === Extract user password for the specified username ===
+USER_PASSWORD=$(awk -v user="$USERNAME" '
+  $0 ~ "username: "user {
+    getline;
+    if ($1 == "password:") print $2;
+  }' "$CONFIG_FILE")
 
 if [ -z "$USER_PASSWORD" ]; then
-  echo "[ERROR] No password found for user $USERNAME in config.yml"
+  echo "[ERROR] No password found for user '$USERNAME' in config.yml"
   exit 1
 fi
 
@@ -122,3 +128,9 @@ su - "$USERNAME" -c "
   mv \"\$IDEA_DIR\" idea
   rm idea.tar.gz
 "
+
+echo "[INFO] IntelliJ IDEA Ultimate installed to /home/$USERNAME/idea"
+
+# === Done ===
+touch /root/.setup_done
+echo "[INFO] Setup completed for $USERNAME at $(date)"
