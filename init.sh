@@ -1,11 +1,4 @@
 #!/bin/bash
-
-# === Usage check ===
-if [[ $# -ne 3 ]]; then
-  echo "Usage: $0 <username> <zerotier-network-id> <user-password>"
-  exit 1
-fi
-
 USERNAME="$1"
 USER_PASSWORD="$2"
 ROOT_PASSWORD="$3"
