@@ -28,8 +28,19 @@ echo "root:$ROOT_PASSWORD" | chpasswd
 # === Remove possible default users ===
 for DEFAULT_USER in student user ubuntu pi; do
   if id "$DEFAULT_USER" &>/dev/null; then
-    pkill -u "$DEFAULT_USER" 2>/dev/null
-    userdel -r "$DEFAULT_USER" && echo "[INFO] Removed default user '$DEFAULT_USER'"
+    echo "[INFO] Attempting to remove default user: $DEFAULT_USER"
+
+    # Kill all user processes
+    pkill -9 -u "$DEFAULT_USER" 2>/dev/null || echo "[WARN] Could not kill all processes for $DEFAULT_USER"
+
+    # Force logout and unmount home if mounted
+    loginctl terminate-user "$DEFAULT_USER" 2>/dev/null || true
+    umount "/home/$DEFAULT_USER" 2>/dev/null || true
+
+    # Now delete the user and its home directory
+    userdel -r "$DEFAULT_USER" && echo "[INFO] Removed default user '$DEFAULT_USER'" || echo "[ERROR] Failed to remove user '$DEFAULT_USER'"
+
+    # Remove home manually if still exists
     rm -rf "/home/$DEFAULT_USER"
   fi
 done
