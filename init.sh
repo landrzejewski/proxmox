@@ -129,8 +129,6 @@ su - "$USERNAME" -c "
   rm idea.tar.gz
 "
 
-echo "[INFO] IntelliJ IDEA Ultimate installed to /home/$USERNAME/idea"
-
 # === Done ===
 touch /root/.setup_done
 echo "[INFO] Setup completed for $USERNAME at $(date)"
