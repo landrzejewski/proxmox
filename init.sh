@@ -92,8 +92,14 @@ echo 'export SDKMAN_DIR="$HOME/.sdkman"' >> /home/$USERNAME/.bashrc
 echo '[ -s "$SDKMAN_DIR/bin/sdkman-init.sh" ] && \. "$SDKMAN_DIR/bin/sdkman-init.sh"' >> /home/$USERNAME/.bashrc
 chown $USERNAME:$USERNAME /home/$USERNAME/.bashrc
 
-# === Download and install IntelliJ IDEA Community Edition ===
-INTELLIJ_URL=$(curl -s https://data.services.jetbrains.com/products/releases?code=IIC\&latest=true\&type=release \
+# === Install Rust via rustup ===
+su - "$USERNAME" -c 'curl https://sh.rustup.rs -sSf | sh -s -- -y'
+echo 'source "$HOME/.cargo/env"' >> /home/$USERNAME/.bashrc
+echo 'export PATH="$HOME/.cargo/bin:$PATH"' >> /home/$USERNAME/.bashrc
+chown $USERNAME:$USERNAME /home/$USERNAME/.bashrc
+
+# === Download and install IntelliJ IDEA Ultimate Edition ===
+INTELLIJ_URL=$(curl -s https://data.services.jetbrains.com/products/releases?code=IIU\&latest=true\&type=release \
   | grep -oP '(?<="linux":\{"link":")[^"]+' | head -1)
 
 su - "$USERNAME" -c "
@@ -105,12 +111,7 @@ su - "$USERNAME" -c "
   rm idea.tar.gz
 "
 
-echo "[INFO] IntelliJ IDEA installed to /home/$USERNAME/idea"
-
-# === Install Rust via rustup ===
-su - "$USERNAME" -c 'curl https://sh.rustup.rs -sSf | sh -s -- -y'
-echo 'source "$HOME/.cargo/env"' >> /home/$USERNAME/.bashrc
-chown $USERNAME:$USERNAME /home/$USERNAME/.bashrc
+echo "[INFO] IntelliJ IDEA Ultimate installed to /home/$USERNAME/idea"
 
 # === Done ===
 touch /root/.setup_done
