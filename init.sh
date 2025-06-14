@@ -1,8 +1,29 @@
 #!/bin/bash
+
+# === Validate input ===
+if [ "$#" -ne 1 ]; then
+  echo "Usage: $0 <username>"
+  exit 1
+fi
+
 USERNAME="$1"
-USER_PASSWORD="$2"
-ROOT_PASSWORD="$3"
-ZEROTIER_NETWORK_ID="$4"
+CONFIG_FILE="config.yml"
+
+# === Check config file exists ===
+if [ ! -f "$CONFIG_FILE" ]; then
+  echo "[ERROR] Configuration file $CONFIG_FILE not found."
+  exit 1
+fi
+
+# === Parse config.yml ===
+ZEROTIER_NETWORK_ID=$(grep 'id:' "$CONFIG_FILE" | awk '{print $2}')
+ROOT_PASSWORD=$(grep 'password:' "$CONFIG_FILE" | head -1 | awk '{print $2}')
+USER_PASSWORD=$(awk "/username: $USERNAME/{getline; print \$2}" "$CONFIG_FILE")
+
+if [ -z "$USER_PASSWORD" ]; then
+  echo "[ERROR] No password found for user $USERNAME in config.yml"
+  exit 1
+fi
 
 exec > >(tee /root/postclone.log) 2>&1
 echo "[INFO] Starting setup for $USERNAME at $(date)"
@@ -41,7 +62,7 @@ echo xfce4-session > /home/$USERNAME/.xsession
 chown $USERNAME:$USERNAME /home/$USERNAME/.xsession
 adduser $USERNAME ssl-cert
 
-# === Install Docker (official Ubuntu) ===
+# === Install Docker ===
 install -m 0755 -d /etc/apt/keyrings
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
 chmod a+r /etc/apt/keyrings/docker.gpg
@@ -62,11 +83,11 @@ ufw allow 22
 ufw allow 3389
 ufw --force enable
 
-# === Install SDKMAN and LTS Java ===
+# === Install SDKMAN and Java ===
 su - "$USERNAME" -c 'curl -s "https://get.sdkman.io" | bash'
 su - "$USERNAME" -c 'source "$HOME/.sdkman/bin/sdkman-init.sh" && sdk install java && sdk default java $(sdk current java | grep -o "java-[^ ]*")'
 
-# === Install NVM and LTS Node.js ===
+# === Install NVM and Node.js ===
 su - "$USERNAME" -c 'curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash'
 su - "$USERNAME" -c '
   export NVM_DIR="$HOME/.nvm"
@@ -76,20 +97,20 @@ su - "$USERNAME" -c '
   nvm alias default lts/*
 '
 
-# === Persist SDKMAN and NVM paths ===
+# === Persist paths ===
 echo 'export NVM_DIR="$HOME/.nvm"' >> /home/$USERNAME/.bashrc
 echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' >> /home/$USERNAME/.bashrc
 echo 'export SDKMAN_DIR="$HOME/.sdkman"' >> /home/$USERNAME/.bashrc
 echo '[ -s "$SDKMAN_DIR/bin/sdkman-init.sh" ] && \. "$SDKMAN_DIR/bin/sdkman-init.sh"' >> /home/$USERNAME/.bashrc
 chown $USERNAME:$USERNAME /home/$USERNAME/.bashrc
 
-# === Install Rust via rustup ===
+# === Install Rust ===
 su - "$USERNAME" -c 'curl https://sh.rustup.rs -sSf | sh -s -- -y'
 echo 'source "$HOME/.cargo/env"' >> /home/$USERNAME/.bashrc
 echo 'export PATH="$HOME/.cargo/bin:$PATH"' >> /home/$USERNAME/.bashrc
 chown $USERNAME:$USERNAME /home/$USERNAME/.bashrc
 
-# === Download and install IntelliJ IDEA Ultimate Edition ===
+# === Install IntelliJ IDEA ===
 INTELLIJ_URL=$(curl -s https://data.services.jetbrains.com/products/releases?code=IIU\&latest=true\&type=release \
   | grep -oP '(?<="linux":\{"link":")[^"]+' | head -1)
 
@@ -101,9 +122,3 @@ su - "$USERNAME" -c "
   mv \"\$IDEA_DIR\" idea
   rm idea.tar.gz
 "
-
-echo "[INFO] IntelliJ IDEA Ultimate installed to /home/$USERNAME/idea"
-
-# === Done ===
-touch /root/.setup_done
-echo "[INFO] Setup completed for $USERNAME at $(date)"

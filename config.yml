@@ -1,0 +1,7 @@
+network:
+  id: e5cd7a9e1c010443
+root:
+  password: root
+users:
+  - username: student1
+    password: student1
