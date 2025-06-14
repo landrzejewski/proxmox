@@ -92,6 +92,11 @@ echo 'export SDKMAN_DIR="$HOME/.sdkman"' >> /home/$USERNAME/.bashrc
 echo '[ -s "$SDKMAN_DIR/bin/sdkman-init.sh" ] && \. "$SDKMAN_DIR/bin/sdkman-init.sh"' >> /home/$USERNAME/.bashrc
 chown $USERNAME:$USERNAME /home/$USERNAME/.bashrc
 
+# === Install Rust via rustup ===
+su - "$USERNAME" -c 'curl https://sh.rustup.rs -sSf | sh -s -- -y'
+echo 'source "$HOME/.cargo/env"' >> /home/$USERNAME/.bashrc
+chown $USERNAME:$USERNAME /home/$USERNAME/.bashrc
+
 # === Done ===
 touch /root/.setup_done
 echo "[INFO] Setup completed for $USERNAME at $(date)"
