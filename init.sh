@@ -25,8 +25,14 @@ fi
 # === Set root password ===
 echo "root:$ROOT_PASSWORD" | chpasswd
 
-# === Remove default user ===
-id user &>/dev/null && userdel -r user && echo "[INFO] Removed 'user'"
+# === Remove possible default users ===
+for DEFAULT_USER in student user ubuntu pi; do
+  if id "$DEFAULT_USER" &>/dev/null; then
+    pkill -u "$DEFAULT_USER" 2>/dev/null
+    userdel -r "$DEFAULT_USER" && echo "[INFO] Removed default user '$DEFAULT_USER'"
+    rm -rf "/home/$DEFAULT_USER"
+  fi
+done
 
 # === Install base packages ===
 apt install -y curl sudo ufw unzip zip git build-essential \
