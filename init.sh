@@ -64,7 +64,9 @@ done
 # === Install base packages ===
 apt install -y curl sudo ufw unzip zip git build-essential \
     openssh-server xrdp xfce4 xfce4-goodies ca-certificates \
-    gnupg lsb-release software-properties-common
+    gnupg lsb-release software-properties-common nfs-common
+
+sudo mkdir -p /mnt/shared
 
 # === Enable services ===
 systemctl enable ssh
