@@ -1,7 +1,45 @@
 network:
-  id: e5cd7a9e1c010443
+  id: 363c67c55a1018b2
 root:
   password: root
 users:
   - username: student1
     password: student1
+  - username: student2
+    password: student2
+  - username: student3
+    password: student3
+  - username: student4
+    password: student4
+  - username: student5
+    password: student5
+  - username: student6
+    password: student6
+  - username: student7
+    password: student7
+  - username: student8
+    password: student8
+  - username: student9
+    password: student9
+  - username: student10
+    password: student10
+  - username: student11
+    password: student11
+  - username: student12
+    password: student12
+  - username: student13
+    password: student13
+  - username: student14
+    password: student14
+  - username: student15
+    password: student15
+  - username: student16
+    password: student16
+  - username: student17
+    password: student17
+  - username: student18
+    password: student18
+  - username: student19
+    password: student19
+  - username: student20
+    password: student20
