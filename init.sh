@@ -91,7 +91,7 @@ usermod -aG docker "$USERNAME"
 
 # === Install ZeroTier ===
 curl -s https://install.zerotier.com | bash
-zerotier-cli join "$ZEROTIER_NETWORK_ID"
+#zerotier-cli join "$ZEROTIER_NETWORK_ID"
 
 # === Firewall ===
 ufw allow 22
@@ -101,29 +101,6 @@ ufw --force enable
 # === Install SDKMAN and Java ===
 su - "$USERNAME" -c 'curl -s "https://get.sdkman.io" | bash'
 su - "$USERNAME" -c 'source "$HOME/.sdkman/bin/sdkman-init.sh" && sdk install java && sdk default java $(sdk current java | grep -o "java-[^ ]*")'
-
-# === Install NVM and Node.js ===
-su - "$USERNAME" -c 'curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash'
-su - "$USERNAME" -c '
-  export NVM_DIR="$HOME/.nvm"
-  [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
-  nvm install --lts
-  nvm use --lts
-  nvm alias default lts/*
-'
-
-# === Persist paths ===
-echo 'export NVM_DIR="$HOME/.nvm"' >> /home/$USERNAME/.bashrc
-echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' >> /home/$USERNAME/.bashrc
-echo 'export SDKMAN_DIR="$HOME/.sdkman"' >> /home/$USERNAME/.bashrc
-echo '[ -s "$SDKMAN_DIR/bin/sdkman-init.sh" ] && \. "$SDKMAN_DIR/bin/sdkman-init.sh"' >> /home/$USERNAME/.bashrc
-chown $USERNAME:$USERNAME /home/$USERNAME/.bashrc
-
-# === Install Rust ===
-su - "$USERNAME" -c 'curl https://sh.rustup.rs -sSf | sh -s -- -y'
-echo 'source "$HOME/.cargo/env"' >> /home/$USERNAME/.bashrc
-echo 'export PATH="$HOME/.cargo/bin:$PATH"' >> /home/$USERNAME/.bashrc
-chown $USERNAME:$USERNAME /home/$USERNAME/.bashrc
 
 # === Install IntelliJ IDEA ===
 INTELLIJ_URL=$(curl -s https://data.services.jetbrains.com/products/releases?code=IIU\&latest=true\&type=release \
@@ -138,6 +115,25 @@ su - "$USERNAME" -c "
   rm idea.tar.gz
 "
 
-# === Done ===
-touch /root/.setup_done
-echo "[INFO] Setup completed for $USERNAME at $(date)"
+## === Install NVM and Node.js ===
+#su - "$USERNAME" -c 'curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash'
+#su - "$USERNAME" -c '
+#  export NVM_DIR="$HOME/.nvm"
+#  [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+#  nvm install --lts
+#  nvm use --lts
+#  nvm alias default lts/*
+#'
+#
+## === Persist paths ===
+#echo 'export NVM_DIR="$HOME/.nvm"' >> /home/$USERNAME/.bashrc
+#echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' >> /home/$USERNAME/.bashrc
+#echo 'export SDKMAN_DIR="$HOME/.sdkman"' >> /home/$USERNAME/.bashrc
+#echo '[ -s "$SDKMAN_DIR/bin/sdkman-init.sh" ] && \. "$SDKMAN_DIR/bin/sdkman-init.sh"' >> /home/$USERNAME/.bashrc
+#chown $USERNAME:$USERNAME /home/$USERNAME/.bashrc
+
+## === Install Rust ===
+#su - "$USERNAME" -c 'curl https://sh.rustup.rs -sSf | sh -s -- -y'
+#echo 'source "$HOME/.cargo/env"' >> /home/$USERNAME/.bashrc
+#echo 'export PATH="$HOME/.cargo/bin:$PATH"' >> /home/$USERNAME/.bashrc
+#chown $USERNAME:$USERNAME /home/$USERNAME/.bashrc
