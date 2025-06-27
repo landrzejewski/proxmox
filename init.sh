@@ -139,3 +139,17 @@ su - "$USERNAME" -c "
 #echo 'source "$HOME/.cargo/env"' >> /home/$USERNAME/.bashrc
 #echo 'export PATH="$HOME/.cargo/bin:$PATH"' >> /home/$USERNAME/.bashrc
 #chown $USERNAME:$USERNAME /home/$USERNAME/.bashrc
+
+
+echo "
+# Network Buffer Optimizations for xrdp
+net.core.rmem_max = 12582912
+net.core.wmem_max = 12582912
+net.ipv4.tcp_rmem = 10240 87380 12582912
+net.ipv4.tcp_wmem = 10240 87380 12582912
+" >> /etc/sysctl.conf
+
+# Apply the settings
+sysctl -p
+
+echo "Network buffer settings added and applied."
