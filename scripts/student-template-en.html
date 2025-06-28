@@ -1,9 +1,174 @@
-<!DOCTYPE html>
+<script>
+    // Function to copy text to clipboard and show feedback
+    function copyToClipboard(text, element) {
+        // Clear any existing selection to prevent text highlighting
+        window.getSelection().removeAllRanges();
+
+        // Focus the document before copying
+        if (!document.hasFocus()) {
+            window.focus();
+        }
+
+        // Try modern clipboard API first, then fallback
+        if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(text).then(function() {
+                showCopyFeedback(element, 'Copied!');
+            }).catch(function(err) {
+                // Fallback method
+                copyUsingExecCommand(text, element);
+            });
+        } else {
+            // Use fallback for older browsers or non-secure contexts
+            copyUsingExecCommand(text, element);
+        }
+    }
+
+    // Fallback copy method
+    function copyUsingExecCommand(text, element) {
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        textArea.style.position = 'fixed';
+        textArea.style.left = '-999999px';
+        textArea.style.top = '-999999px';
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+
+        try {
+            document.execCommand('copy');
+            showCopyFeedback(element, 'Copied!');
+        } catch (err) {
+            console.error('Failed to copy: ', err);
+            alert('Failed to copy to clipboard. Please copy manually.');
+        } finally {
+            textArea.remove();
+        }
+    }
+
+    // Show visual feedback after copying
+    function showCopyFeedback(element, message) {
+        // Create and show tooltip
+        const tooltip = document.createElement('div');
+        tooltip.textContent = message;
+        tooltip.style.cssText = `
+            position: fixed;
+            background: #0F172AFF;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            font-weight: 500;
+            z-index: 10000;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        `;
+
+        // Position tooltip above the element
+        const rect = element.getBoundingClientRect();
+        tooltip.style.left = (rect.left + rect.width / 2) + 'px';
+        tooltip.style.top = (rect.top - 35) + 'px';
+        tooltip.style.transform = 'translateX(-50%)';
+
+        document.body.appendChild(tooltip);
+
+        // Animate tooltip
+        requestAnimationFrame(() => {
+            tooltip.style.opacity = '1';
+
+            setTimeout(() => {
+                tooltip.style.opacity = '0';
+                setTimeout(() => tooltip.remove(), 200);
+            }, 1000);
+        });
+
+        // Brief visual feedback on the element
+        element.style.transition = 'transform 0.1s ease';
+        element.style.transform = 'scale(0.98)';
+
+        setTimeout(() => {
+            element.style.transform = 'scale(1)';
+        }, 100);
+    }
+
+    // Add subtle hover styles and prevent text selection
+    const customStyles = document.createElement('style');
+    customStyles.textContent = `
+        .config-value {
+            cursor: pointer;
+            position: relative;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+
+        .command-block {
+            cursor: pointer;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+
+        /* Allow text selection only for password when visible */
+        .config-item:has(.password-container):hover .password-hidden {
+            user-select: text;
+            -webkit-user-select: text;
+            -moz-user-select: text;
+            -ms-user-select: text;
+        }
+    `;
+    document.head.appendChild(customStyles);
+
+    // Click to copy functionality for all config values except password
+    document.querySelectorAll('.config-value:not(.password-hidden)').forEach(element => {
+        element.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const text = this.textContent.trim();
+            copyToClipboard(text, this);
+        });
+    });
+
+    // Click to copy functionality for command blocks
+    document.querySelectorAll('.command-block').forEach(element => {
+        element.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const text = this.textContent.trim();
+            copyToClipboard(text, this);
+        });
+    });
+
+    // Special handling for password field - only copy when visible
+    const passwordEl = document.querySelector('.config-value.password-hidden');
+    if (passwordEl) {
+        passwordEl.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            // Check if password is currently visible (parent config-item is being hovered)
+            const configItem = this.closest('.config-item');
+            if (configItem && configItem.matches(':hover')) {
+                const text = this.textContent.trim();
+                copyToClipboard(text, this);
+            }
+        });
+    }
+
+    // Prevent double-click text selection
+    document.addEventListener('mousedown', function(e) {
+        if (e.target.classList.contains('config-value') || e.target.classList.contains('command-block')) {
+            e.preventDefault();
+        }
+    });
+</script><!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Remote Training Environment</title>
+    <title>Your Virtual Training Environment</title>
     <style>
         * {
             margin: 0;
@@ -119,6 +284,24 @@
             font-weight: 500;
             user-select: all;
             cursor: text;
+        }
+
+        /* Special styling for password field */
+        .password-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .password-hidden {
+            color: transparent;
+            text-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
+            user-select: none;
+        }
+
+        .config-item:has(.password-container):hover .password-hidden {
+            color: #0f172a;
+            text-shadow: none;
+            user-select: all;
         }
 
         .command-block {
@@ -394,7 +577,7 @@
 <body>
 <div class="container">
     <div class="header">
-        <h1>Remote Training Environment</h1>
+        <h1>Your Virtual Training Environment</h1>
     </div>
 
     <div class="content">
@@ -411,7 +594,9 @@
                 </div>
                 <div class="config-item">
                     <span class="config-label">Password</span>
-                    <span class="config-value">{{PASSWORD}}</span>
+                    <div class="password-container">
+                        <span class="config-value config-password password-hidden">{{PASSWORD}}</span>
+                    </div>
                 </div>
                 <div class="config-item">
                     <span class="config-label">SSH Port</span>
@@ -432,7 +617,7 @@
 
         <div class="section">
             <h2 class="section-title">Remote Desktop Connection</h2>
-            <p class="command-desc">Open an RDP client and enter the computer address:</p>
+            <p class="command-desc">Open your RDP client and enter the computer address:</p>
             <div class="command-block">x-tunnel.pl:{{RDP_PORT}}</div>
         </div>
 
@@ -441,46 +626,46 @@
             <div class="warning-content">
                 <ul>
                     <li>Access credentials are confidential - do not share them with third parties</li>
-                    <li>Virtual machine usage is subject to the regulations below</li>
+                    <li>Use of the virtual machine is subject to the regulations below</li>
                     <li>All activity may be monitored for security purposes</li>
                 </ul>
             </div>
         </div>
 
         <div class="regulations-section">
-            <h2 class="regulations-title">Virtual Machine Usage Policy</h2>
+            <h2 class="regulations-title">Virtual Machine Usage Regulations</h2>
             <div class="regulations-content">
                 <p><strong>Effective from: June 20, 2025</strong></p>
 
-                <h2>1. Purpose and Scope</h2>
-                <p>This policy (hereinafter: "Policy") defines the rules for using virtual machines (hereinafter: "VM" or "Virtual Machines") provided to participants (hereinafter: "Participant" or "User") as part of training organized by Sages sp. z o.o. (hereinafter: "Organizer"). The purpose of the Policy is to ensure safe, lawful, and ethical use of the infrastructure, as well as to limit the potential legal liability of the Organizer.</p>
+                <h2>1. Purpose and Scope of Regulations</h2>
+                <p>These regulations (hereinafter: "Regulations") define the rules for using virtual machines (hereinafter: "VM" or "Virtual Machines") provided to participants (hereinafter: "Participant" or "User") as part of training organized by Sages sp. z o.o. (hereinafter: "Organizer"). The purpose of the Regulations is to ensure safe, lawful, and ethical use of the infrastructure, as well as to limit the potential legal liability of the Organizer.</p>
 
                 <h2>2. Definitions</h2>
                 <ol>
-                    <li><strong>Virtual Machine (VM)</strong> – a dedicated, isolated computing environment provided to the Participant by the Organizer exclusively for the duration and purposes of the training.</li>
-                    <li><strong>System</strong> – the entire technical infrastructure and software within which Virtual Machines operate.</li>
+                    <li><strong>Virtual Machine (VM)</strong> – a separate, isolated computing environment provided to the Participant by the Organizer exclusively for the duration and purposes of the training.</li>
+                    <li><strong>System</strong> – the entirety of technical infrastructure and software within which Virtual Machines operate.</li>
                     <li><strong>Training Materials</strong> – content and resources provided to Participants by the Organizer as part of the training.</li>
-                    <li><strong>Prohibited Actions</strong> – any activities contrary to law, the Policy, good practices, or violating the rights of third parties.</li>
+                    <li><strong>Prohibited Actions</strong> – any activities contrary to law, Regulations, good practices, or violating the rights of third parties.</li>
                 </ol>
 
                 <h2>3. Access Conditions</h2>
                 <ol>
-                    <li>The Organizer grants the Participant access to VM for the duration of the training and under the conditions specified in the Policy.</li>
-                    <li>Access is personal and may not be shared with third parties.</li>
-                    <li>Login credentials are confidential information; the Participant is obligated not to disclose them.</li>
+                    <li>The Organizer grants the Participant access to the VM for the duration of the training and under the conditions specified in the Regulations.</li>
+                    <li>Access credentials are personal and may not be shared with third parties.</li>
+                    <li>Login data is confidential information; the Participant is obliged not to disclose it.</li>
                 </ol>
 
                 <h2>4. Usage Rules</h2>
 
                 <h3>4.1. Permitted Actions</h3>
                 <ol>
-                    <li>Performing tasks provided in the training program.</li>
-                    <li>Installing and configuring software necessary to complete exercises, provided it does not violate section 4.2.</li>
+                    <li>Completing tasks provided for in the training program.</li>
+                    <li>Installing and configuring software necessary to perform exercises, provided it does not violate section 4.2.</li>
                 </ol>
 
                 <h3>4.2. Prohibited Actions</h3>
                 <ol>
-                    <li>Using VM for any unlawful activity, in particular:
+                    <li>Using VM for any illegal activity, in particular:
                         <ul>
                             <li>unauthorized access to computer systems (hacking, phishing, etc.);</li>
                             <li>distributing malicious software;</li>
@@ -490,20 +675,20 @@
                         </ul>
                     </li>
                     <li>Modifying System security settings without the Organizer's consent.</li>
-                    <li>Sharing VM resources with other persons.</li>
+                    <li>Sharing VM resources with other people.</li>
                     <li>Using VM for commercial or private purposes unrelated to the training.</li>
                 </ol>
 
                 <h2>5. Activity Monitoring and Logging</h2>
                 <ol>
                     <li>All activity in the System may be monitored, logged, and analyzed by the Organizer or entities authorized by them.</li>
-                    <li>Logs may be used for security purposes, system development, and when necessary to demonstrate compliance with the law.</li>
+                    <li>Logs may be used for security purposes, system development, and when necessary to demonstrate legal compliance.</li>
                     <li>The Participant consents to this by starting to use the VM.</li>
                 </ol>
 
                 <h2>6. Personal Data Protection and Confidentiality</h2>
                 <ol>
-                    <li>The Organizer processes Participants' personal data in accordance with applicable regulations (particularly GDPR) only to the extent necessary to conduct the training.</li>
+                    <li>The Organizer processes Participants' personal data in accordance with applicable regulations (particularly GDPR) only to the extent necessary for training implementation.</li>
                     <li>The Participant undertakes not to process personal data in the VM that is not necessary for completing exercises.</li>
                     <li>The User is responsible for the confidentiality of data they enter into the VM.</li>
                 </ol>
@@ -511,7 +696,7 @@
                 <h2>7. Participant's Liability</h2>
                 <ol>
                     <li>The Participant bears full civil, criminal, and administrative liability for their actions in the VM.</li>
-                    <li>The Participant undertakes to indemnify the Organizer from liability for any third-party claims arising from the Participant's Prohibited Actions.</li>
+                    <li>The Participant undertakes to release the Organizer from liability for any third-party claims arising from the Participant's Prohibited Actions.</li>
                 </ol>
 
                 <h2>8. Organizer's Liability</h2>
@@ -522,29 +707,29 @@
 
                 <h2>9. Violations and Sanctions</h2>
                 <ol>
-                    <li>In case of Policy violation, the Organizer may, at their discretion:
+                    <li>In case of violation of the Regulations, the Organizer may, at their discretion:
                         <ul>
                             <li>block or restrict access to the VM;</li>
-                            <li>exclude the Participant from the training without the right to reimbursement;</li>
+                            <li>exclude the Participant from training without the right to refund;</li>
                             <li>notify appropriate law enforcement agencies or take legal action.</li>
                         </ul>
                     </li>
-                    <li>Actions taken under section 9.1 do not exclude the Organizer's right to seek compensation.</li>
+                    <li>Actions taken in connection with section 9.1 do not exclude the Organizer's right to seek compensation.</li>
                 </ol>
 
                 <h2>10. Security Incident Reporting</h2>
-                <p>The Participant undertakes to immediately inform the Organizer of any security incident, irregularity, or suspected violation of the Policy rules.</p>
+                <p>The Participant undertakes to immediately inform the Organizer of any security incident, irregularity, or suspicion of violation of the Regulations.</p>
 
                 <h2>11. Final Provisions</h2>
                 <ol>
-                    <li>The Policy comes into effect on the date specified in the header.</li>
-                    <li>The Organizer reserves the right to make changes to the Policy; changes take effect from the moment of their publication and communication to Participants.</li>
-                    <li>In matters not regulated by the Policy, Polish law applies, in particular the Civil Code and the Act on Electronic Services.</li>
-                    <li>Any disputes arising in connection with the use of VM will be resolved by the court competent for the Organizer's registered office, unless mandatory provisions state otherwise.</li>
-                    <li>Starting to use the Virtual Machine is tantamount to accepting the Policy.</li>
+                    <li>The Regulations come into force on the date specified in the header.</li>
+                    <li>The Organizer reserves the right to introduce changes to the Regulations; changes are effective from the moment of their publication and communication to Participants.</li>
+                    <li>In matters not regulated by the Regulations, the provisions of Polish law apply, in particular the Civil Code and the Act on Electronic Services.</li>
+                    <li>Any disputes arising in connection with the use of VM will be resolved by the court with jurisdiction for the Organizer's registered office, unless mandatory provisions state otherwise.</li>
+                    <li>Starting to use the Virtual Machine is equivalent to accepting the Regulations.</li>
                 </ol>
 
-                <p><em>Version 1.0 – 20.06.2025</em></p>
+                <p><em>Version 1.0 – June 20, 2025</em></p>
             </div>
         </div>
     </div>
@@ -564,16 +749,127 @@
 </div>
 
 <script>
-    // Click to select functionality for credential values and commands
-    document.querySelectorAll('.config-value, .command-block').forEach(element => {
-        element.addEventListener('click', function() {
+    // Function to copy text to clipboard and show feedback
+    function copyToClipboard(text, element) {
+        navigator.clipboard.writeText(text).then(function() {
+            // Show success feedback with subtle animation
+            const originalBg = window.getComputedStyle(element).backgroundColor;
+            const originalTransition = element.style.transition;
+
+            // Create and show tooltip
+            const tooltip = document.createElement('div');
+            tooltip.textContent = 'Copied!';
+            tooltip.style.cssText = `
+                position: fixed;
+                background: #059669;
+                color: white;
+                padding: 6px 12px;
+                border-radius: 4px;
+                font-size: 0.8em;
+                font-weight: 500;
+                z-index: 10000;
+                pointer-events: none;
+                opacity: 0;
+                transition: opacity 0.2s ease;
+            `;
+
+            // Position tooltip above the element
+            const rect = element.getBoundingClientRect();
+            tooltip.style.left = (rect.left + rect.width / 2) + 'px';
+            tooltip.style.top = (rect.top - 35) + 'px';
+            tooltip.style.transform = 'translateX(-50%)';
+
+            document.body.appendChild(tooltip);
+
+            // Animate tooltip
+            requestAnimationFrame(() => {
+                tooltip.style.opacity = '1';
+
+                setTimeout(() => {
+                    tooltip.style.opacity = '0';
+                    setTimeout(() => tooltip.remove(), 200);
+                }, 1000);
+            });
+
+            // Subtle background flash
+            element.style.transition = 'background-color 0.2s ease';
+            element.style.backgroundColor = 'rgba(16, 185, 129, 0.1)';
+
+            setTimeout(() => {
+                element.style.backgroundColor = originalBg;
+                setTimeout(() => {
+                    element.style.transition = originalTransition;
+                }, 200);
+            }, 200);
+
+        }).catch(function(err) {
+            console.error('Failed to copy: ', err);
+            // Fallback to select text
             const selection = window.getSelection();
             const range = document.createRange();
-            range.selectNodeContents(this);
+            range.selectNodeContents(element);
             selection.removeAllRanges();
             selection.addRange(range);
         });
+    }
+
+    // Add subtle hover styles
+    const style = document.createElement('style');
+    style.textContent = `
+        .config-value {
+            cursor: pointer;
+            position: relative;
+        }
+
+        .command-block {
+            cursor: pointer;
+        }
+
+        .config-value:hover {
+            background: white !important;
+        }
+
+        .command-block:hover {
+            background: #1e293b !important;
+        }
+    `;
+    document.head.appendChild(style);
+
+    // Click to copy functionality for all config values except password
+    document.querySelectorAll('.config-value:not(.password-hidden)').forEach(element => {
+        element.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const text = this.textContent.trim();
+            copyToClipboard(text, this);
+        });
     });
+
+    // Click to copy functionality for command blocks
+    document.querySelectorAll('.command-block').forEach(element => {
+        element.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const text = this.textContent.trim();
+            copyToClipboard(text, this);
+        });
+    });
+
+    // Special handling for password field - only copy when visible
+    const passwordElement = document.querySelector('.config-value.password-hidden');
+    if (passwordElement) {
+        // Remove any existing click handlers first
+        const newPasswordElement = passwordElement.cloneNode(true);
+        passwordElement.parentNode.replaceChild(newPasswordElement, passwordElement);
+
+        newPasswordElement.addEventListener('click', function(e) {
+            e.stopPropagation();
+            // Check if password is currently visible (parent config-item is being hovered)
+            const configItem = this.closest('.config-item');
+            if (configItem && configItem.matches(':hover')) {
+                const text = this.textContent.trim();
+                copyToClipboard(text, this);
+            }
+        });
+    }
 </script>
 </body>
 </html>

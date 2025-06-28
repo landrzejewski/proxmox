@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Function to display usage
 show_usage() {
     echo "Usage: $0 [--lang pl|en] <number_of_students> OR $0 [--lang pl|en] <start> <end>"
@@ -68,14 +70,26 @@ read_current_password() {
     local password_file="credentials/student${student_num}.html"
 
     if [ -f "$password_file" ]; then
-        # Read password from HTML file - extract password value from the HTML
-        # For macOS, use sed instead of grep -P which isn't supported
+        # Read password from HTML file - look specifically for the password field
+        # Debug: Let's see what we're finding
+        # echo "Debug: Reading from $password_file" >&2
+
         if [[ "$OSTYPE" == "darwin"* ]]; then
-            # macOS version
-            sed -n '/<span class="config-value">/s/.*<span class="config-value">\([^<]*\)<\/span>.*/\1/p' "$password_file" | sed -n '3p' | tr -d '\n'
+            # macOS version - extract password from the config-password span
+            # First, let's get the entire line with the password
+            local password_line=$(grep 'class="config-value config-password' "$password_file")
+            # echo "Debug: Found line: $password_line" >&2
+
+            # Extract content between > and < after the class definition
+            local extracted_password=$(echo "$password_line" | sed -E 's/.*class="config-value config-password[^>]*>([^<]+)<.*/\1/')
+            # echo "Debug: Extracted password: '$extracted_password'" >&2
+
+            echo "$extracted_password"
         else
-            # Linux version with grep -P
-            grep -oP '(?<=<span class="config-value">)[^<]+(?=</span>)' "$password_file" | sed -n '3p' | tr -d '\n'
+            # Linux version - use grep with Perl regex
+            local extracted_password=$(grep -oP 'class="config-value config-password[^>]*>\K[^<]+' "$password_file" | head -1)
+            # echo "Debug: Extracted password: '$extracted_password'" >&2
+            echo "$extracted_password"
         fi
     else
         # If file doesn't exist, assume default password is studentX
@@ -111,16 +125,19 @@ update_password_file() {
     cp "$template_file" "$password_file"
 
     # Replace placeholders with actual values - macOS compatible
+    # Need to escape special characters in passwords for sed
+    local escaped_password=$(printf '%s\n' "$new_password" | sed 's/[[\.*^$()+?{|]/\\&/g')
+
     if [[ "$OSTYPE" == "darwin"* ]]; then
         # macOS
         sed -i '' "s/{{USERNAME}}/${username}/g" "$password_file"
-        sed -i '' "s/{{PASSWORD}}/${new_password}/g" "$password_file"
+        sed -i '' "s/{{PASSWORD}}/${escaped_password}/g" "$password_file"
         sed -i '' "s/{{SSH_PORT}}/${ssh_port}/g" "$password_file"
         sed -i '' "s/{{RDP_PORT}}/${rdp_port}/g" "$password_file"
     else
         # Linux
         sed -i "s/{{USERNAME}}/${username}/g" "$password_file"
-        sed -i "s/{{PASSWORD}}/${new_password}/g" "$password_file"
+        sed -i "s/{{PASSWORD}}/${escaped_password}/g" "$password_file"
         sed -i "s/{{SSH_PORT}}/${ssh_port}/g" "$password_file"
         sed -i "s/{{RDP_PORT}}/${rdp_port}/g" "$password_file"
     fi
@@ -155,7 +172,7 @@ change_user_password() {
 echo "Starting student password management script..."
 echo "Using language: $LANGUAGE"
 echo "Processing students from $START_NUM to $END_NUM"
-echo "Connecting via x-tunnel.pl host with port 2000x..."
+echo "Connecting via x-tunnel.pl host with port 1000x..."
 echo "Setting up credentials folder..."
 
 # Create credentials folder if it doesn't exist

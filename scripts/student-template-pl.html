@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Szkoleniowe środowisko zdalne</title>
+    <title>Twoje wirtualne środowisko szkoleniowe</title>
     <style>
         * {
             margin: 0;
@@ -119,6 +119,24 @@
             font-weight: 500;
             user-select: all;
             cursor: text;
+        }
+
+        /* Special styling for password field */
+        .password-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .password-hidden {
+            color: transparent;
+            text-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
+            user-select: none;
+        }
+
+        .config-item:has(.password-container):hover .password-hidden {
+            color: #0f172a;
+            text-shadow: none;
+            user-select: all;
         }
 
         .command-block {
@@ -366,7 +384,7 @@
                 gap: 8px;
             }
 
-            .config-value {
+            .config-value, .password-value {
                 width: 100%;
                 text-align: center;
             }
@@ -394,7 +412,7 @@
 <body>
 <div class="container">
     <div class="header">
-        <h1>Szkoleniowe środowisko zdalne</h1>
+        <h1>Twoje wirtualne środowisko szkoleniowe</h1>
     </div>
 
     <div class="content">
@@ -411,7 +429,9 @@
                 </div>
                 <div class="config-item">
                     <span class="config-label">Hasło</span>
-                    <span class="config-value">{{PASSWORD}}</span>
+                    <div class="password-container">
+                        <span class="config-value config-password password-hidden">{{PASSWORD}}</span>
+                    </div>
                 </div>
                 <div class="config-item">
                     <span class="config-label">Port SSH</span>
@@ -564,15 +584,169 @@
 </div>
 
 <script>
-    // Click to select functionality for credential values and commands
-    document.querySelectorAll('.config-value, .command-block').forEach(element => {
-        element.addEventListener('click', function() {
-            const selection = window.getSelection();
-            const range = document.createRange();
-            range.selectNodeContents(this);
-            selection.removeAllRanges();
-            selection.addRange(range);
+    // Function to copy text to clipboard and show feedback
+    function copyToClipboard(text, element) {
+        // Clear any existing selection to prevent text highlighting
+        window.getSelection().removeAllRanges();
+
+        // Focus the document before copying
+        if (!document.hasFocus()) {
+            window.focus();
+        }
+
+        // Try modern clipboard API first, then fallback
+        if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(text).then(function() {
+                showCopyFeedback(element, 'Skopiowano!');
+            }).catch(function(err) {
+                // Fallback method
+                copyUsingExecCommand(text, element);
+            });
+        } else {
+            // Use fallback for older browsers or non-secure contexts
+            copyUsingExecCommand(text, element);
+        }
+    }
+
+    // Fallback copy method
+    function copyUsingExecCommand(text, element) {
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        textArea.style.position = 'fixed';
+        textArea.style.left = '-999999px';
+        textArea.style.top = '-999999px';
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+
+        try {
+            document.execCommand('copy');
+            showCopyFeedback(element, 'Skopiowano!');
+        } catch (err) {
+            console.error('Failed to copy: ', err);
+            alert('Kopiowanie do schowka nie powiodło się. Proszę skopiować ręcznie.');
+        } finally {
+            textArea.remove();
+        }
+    }
+
+    // Show visual feedback after copying
+    function showCopyFeedback(element, message) {
+        // Create and show tooltip
+        const tooltip = document.createElement('div');
+        tooltip.textContent = message;
+        tooltip.style.cssText = `
+            position: fixed;
+            background: #0F172AFF;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            font-weight: 500;
+            z-index: 10000;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        `;
+
+        // Position tooltip above the element
+        const rect = element.getBoundingClientRect();
+        tooltip.style.left = (rect.left + rect.width / 2) + 'px';
+        tooltip.style.top = (rect.top - 35) + 'px';
+        tooltip.style.transform = 'translateX(-50%)';
+
+        document.body.appendChild(tooltip);
+
+        // Animate tooltip
+        requestAnimationFrame(() => {
+            tooltip.style.opacity = '1';
+
+            setTimeout(() => {
+                tooltip.style.opacity = '0';
+                setTimeout(() => tooltip.remove(), 200);
+            }, 1000);
         });
+
+        // Brief visual feedback on the element
+        element.style.transition = 'transform 0.1s ease';
+        element.style.transform = 'scale(0.98)';
+
+        setTimeout(() => {
+            element.style.transform = 'scale(1)';
+        }, 100);
+    }
+
+    // Add subtle hover styles and prevent text selection
+    const style = document.createElement('style');
+    style.textContent = `
+        .config-value {
+            cursor: pointer;
+            position: relative;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+
+        .command-block {
+            cursor: pointer;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+
+        /* Allow text selection only for password when visible */
+        .config-item:has(.password-container):hover .password-hidden {
+            user-select: text;
+            -webkit-user-select: text;
+            -moz-user-select: text;
+            -ms-user-select: text;
+        }
+    `;
+    document.head.appendChild(style);
+
+    // Click to copy functionality for all config values except password
+    document.querySelectorAll('.config-value:not(.password-hidden)').forEach(element => {
+        element.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const text = this.textContent.trim();
+            copyToClipboard(text, this);
+        });
+    });
+
+    // Click to copy functionality for command blocks
+    document.querySelectorAll('.command-block').forEach(element => {
+        element.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const text = this.textContent.trim();
+            copyToClipboard(text, this);
+        });
+    });
+
+    // Special handling for password field - only copy when visible
+    const passwordEl = document.querySelector('.config-value.password-hidden');
+    if (passwordEl) {
+        passwordEl.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            // Check if password is currently visible (parent config-item is being hovered)
+            const configItem = this.closest('.config-item');
+            if (configItem && configItem.matches(':hover')) {
+                const text = this.textContent.trim();
+                copyToClipboard(text, this);
+            }
+        });
+    }
+
+    // Prevent double-click text selection
+    document.addEventListener('mousedown', function(e) {
+        if (e.target.classList.contains('config-value') || e.target.classList.contains('command-block')) {
+            e.preventDefault();
+        }
     });
 </script>
 </body>
