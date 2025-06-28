@@ -64,7 +64,7 @@ done
 # === Install base packages ===
 apt install -y curl sudo ufw unzip zip git build-essential \
     openssh-server xrdp xfce4 xfce4-goodies ca-certificates \
-    gnupg lsb-release software-properties-common nfs-common
+    gnupg lsb-release software-properties-common nfs-common yad
 
 sudo mkdir -p /mnt/shared
 
@@ -152,4 +152,8 @@ net.ipv4.tcp_wmem = 10240 87380 12582912
 # Apply the settings
 sysctl -p
 
-echo "Network buffer settings added and applied."
+sudo nano /etc/xrdp/startwm.sh
+
+yad --text-info --center --title="Regulamin" --width=800 --height=600 \
+    --filename="/home/policy.txt" --button=OK:0 --button=Cancel:1
+[ $? -eq 0 ]  || exit
