@@ -60,7 +60,8 @@ XTUNNEL_HOST="x-tunnel.pl"
 
 # Function to generate random password (8 characters: letters and digits)
 generate_password() {
-    tr -dc 'A-Za-z0-9' < /dev/urandom | head -c 8
+    # Fix for macOS "Illegal byte sequence" error
+    LC_ALL=C tr -dc 'A-Za-z0-9#!&@' < /dev/urandom | head -c 8
 }
 
 # Function to read current password from file
@@ -70,8 +71,14 @@ read_current_password() {
 
     if [ -f "$password_file" ]; then
         # Read password from HTML file - extract password value from the HTML
-        # Updated to match the Polish HTML structure
-        grep -oP '(?<=<span class="config-value">)[^<]+(?=</span>)' "$password_file" | sed -n '3p' | tr -d '\n'
+        # For macOS, use sed instead of grep -P which isn't supported
+        if [[ "$OSTYPE" == "darwin"* ]]; then
+            # macOS version
+            sed -n '/<span class="config-value">/s/.*<span class="config-value">\([^<]*\)<\/span>.*/\1/p' "$password_file" | sed -n '3p' | tr -d '\n'
+        else
+            # Linux version with grep -P
+            grep -oP '(?<=<span class="config-value">)[^<]+(?=</span>)' "$password_file" | sed -n '3p' | tr -d '\n'
+        fi
     else
         # If file doesn't exist, assume default password is studentX
         echo "student${student_num}"
@@ -105,11 +112,20 @@ update_password_file() {
     # Copy template to destination and replace placeholders
     cp "$template_file" "$password_file"
 
-    # Replace placeholders with actual values
-    sed -i "s/{{USERNAME}}/${username}/g" "$password_file"
-    sed -i "s/{{PASSWORD}}/${new_password}/g" "$password_file"
-    sed -i "s/{{SSH_PORT}}/${ssh_port}/g" "$password_file"
-    sed -i "s/{{RDP_PORT}}/${rdp_port}/g" "$password_file"
+    # Replace placeholders with actual values - macOS compatible
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+        # macOS
+        sed -i '' "s/{{USERNAME}}/${username}/g" "$password_file"
+        sed -i '' "s/{{PASSWORD}}/${new_password}/g" "$password_file"
+        sed -i '' "s/{{SSH_PORT}}/${ssh_port}/g" "$password_file"
+        sed -i '' "s/{{RDP_PORT}}/${rdp_port}/g" "$password_file"
+    else
+        # Linux
+        sed -i "s/{{USERNAME}}/${username}/g" "$password_file"
+        sed -i "s/{{PASSWORD}}/${new_password}/g" "$password_file"
+        sed -i "s/{{SSH_PORT}}/${ssh_port}/g" "$password_file"
+        sed -i "s/{{RDP_PORT}}/${rdp_port}/g" "$password_file"
+    fi
 
     echo "Updated password file: $password_file"
 }
@@ -120,16 +136,13 @@ change_user_password() {
     local username="$2"
     local old_password="$3"
     local new_password="$4"
-    local ssh_port="2$(printf "%04d" ${student_num})"
+    local ssh_port="1$(printf "%04d" ${student_num})"
 
     echo "Connecting to $XTUNNEL_HOST:$ssh_port as user $username to change password..."
 
     # Use sshpass to connect as the user and change their own password
-    sshpass -p "$old_password" ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 -o BatchMode=no -p "$ssh_port" "$username"@"$XTUNNEL_HOST" << EOF
-        # Change own password using passwd
-        echo -e "$old_password\n$new_password\n$new_password" | passwd
-        echo "Password changed for user $username"
-EOF
+    # Using printf instead of echo -e for better compatibility
+    sshpass -p "$old_password" ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 -o BatchMode=no -p "$ssh_port" "$username"@"$XTUNNEL_HOST" "printf '%s\n%s\n%s\n' '$old_password' '$new_password' '$new_password' | passwd"
 
     local ssh_result=$?
     if [ $ssh_result -eq 0 ]; then
@@ -175,11 +188,9 @@ for ((i=START_NUM; i<=END_NUM; i++)); do
         ((SUCCESSFUL++))
     else
         echo "Failed to change password for $filename - keeping existing password"
-        # If password change failed but file doesn't exist, create it with default password
-        if [ ! -f "credentials/student${i}.html" ]; then
-            update_password_file "$i" "$current_password"
-            echo "Created credential file with existing password for $filename"
-        fi
+        # Always create/update the file with the current password
+        update_password_file "$i" "$current_password"
+        echo "Created/updated credential file with existing password for $filename"
         ((FAILED++))
     fi
 
