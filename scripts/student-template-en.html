@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remote Environment Configuration - Sages</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: radial-gradient(ellipse at top, #e0e7ff 0%, #f3f4f6 40%, #fafafa 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 12px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            max-width: 800px;
+            margin: 0 auto;
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #00a8e8 0%, #0077be 50%, #00a8e8 100%);
+        }
+
+        h1 {
+            font-size: 2.2em;
+            font-weight: 600;
+            margin-bottom: 0;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .section {
+            margin-bottom: 35px;
+        }
+
+        .section-title {
+            color: #1e293b;
+            font-size: 1.2em;
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .section-title::before {
+            content: '';
+            display: inline-block;
+            width: 4px;
+            height: 20px;
+            background: #00a8e8;
+            margin-right: 12px;
+            border-radius: 2px;
+        }
+
+        .config-grid {
+            display: grid;
+            gap: 12px;
+        }
+
+        .config-item {
+            background: #f8f9fa;
+            padding: 14px 18px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.2s ease;
+            border: 1px solid #e9ecef;
+        }
+
+        .config-item:hover {
+            background: #e9ecef;
+            border-color: #cbd5e1;
+            transform: translateX(2px);
+        }
+
+        .config-label {
+            font-weight: 500;
+            color: #475569;
+            font-size: 0.95em;
+        }
+
+        .config-value {
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', monospace;
+            color: #0f172a;
+            background: white;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 0.9em;
+            border: 1px solid #dee2e6;
+            font-weight: 500;
+            user-select: all;
+            cursor: text;
+        }
+
+        .command-block {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 18px 20px;
+            border-radius: 8px;
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', monospace;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+            overflow-x: auto;
+            position: relative;
+            transition: all 0.2s ease;
+            cursor: text;
+            user-select: all;
+        }
+
+        .command-block:hover {
+            background: #0f172a;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .command-desc {
+            color: #64748b;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }
+
+        .note {
+            background: #f0f9ff;
+            border-left: 4px solid #00a8e8;
+            padding: 18px;
+            border-radius: 0 8px 8px 0;
+            margin-top: 25px;
+        }
+
+        .note-title {
+            font-weight: 600;
+            color: #0369a1;
+            margin-bottom: 10px;
+            font-size: 1em;
+            display: flex;
+            align-items: center;
+        }
+
+        .note-title::before {
+            content: 'ⓘ';
+            margin-right: 8px;
+            font-size: 1.1em;
+        }
+
+        .note-content {
+            color: #0c4a6e;
+            font-size: 0.9em;
+        }
+
+        .note-content ul {
+            margin-left: 20px;
+            margin-top: 8px;
+        }
+
+        .note-content li {
+            margin-bottom: 5px;
+        }
+
+        .warning-box {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: 8px;
+            padding: 18px;
+            margin-top: 25px;
+        }
+
+        .warning-title {
+            font-weight: 600;
+            color: #991b1b;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .warning-title::before {
+            content: '⚠️';
+            margin-right: 8px;
+            font-size: 1.1em;
+        }
+
+        .warning-content {
+            color: #7f1d1d;
+            font-size: 0.9em;
+        }
+
+        .warning-content ul {
+            margin-left: 0;
+            padding-left: 20px;
+        }
+
+        .regulations-section {
+            background: #f8fafc;
+            padding: 30px;
+            border-radius: 8px;
+            margin-top: 30px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .regulations-title {
+            color: #1e293b;
+            font-size: 1.3em;
+            font-weight: 600;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .regulations-content {
+            font-size: 0.85em;
+            color: #475569;
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .regulations-content::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .regulations-content::-webkit-scrollbar-track {
+            background: #e2e8f0;
+            border-radius: 4px;
+        }
+
+        .regulations-content::-webkit-scrollbar-thumb {
+            background: #94a3b8;
+            border-radius: 4px;
+        }
+
+        .regulations-content::-webkit-scrollbar-thumb:hover {
+            background: #64748b;
+        }
+
+        .regulations-content h2 {
+            color: #1e293b;
+            font-size: 1.1em;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .regulations-content h3 {
+            color: #334155;
+            font-size: 1em;
+            margin-top: 15px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .regulations-content p {
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+
+        .regulations-content ol, .regulations-content ul {
+            margin-left: 25px;
+            margin-bottom: 10px;
+        }
+
+        .regulations-content li {
+            margin-bottom: 5px;
+            line-height: 1.5;
+        }
+
+        .regulations-content strong {
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .footer {
+            background: #f8fafc;
+            text-align: center;
+            padding: 30px 40px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .footer-left {
+            text-align: left;
+        }
+
+        .footer-logo {
+            font-weight: 700;
+            color: #0f172a;
+            font-size: 1.1em;
+            margin-bottom: 4px;
+        }
+
+        .footer-tagline {
+            color: #64748b;
+            font-size: 0.85em;
+        }
+
+        .footer-right {
+            text-align: right;
+        }
+
+        .footer-link {
+            color: #2563eb;
+            text-decoration: none;
+            font-size: 0.9em;
+            transition: color 0.2s ease;
+        }
+
+        .footer-link:hover {
+            color: #1d4ed8;
+            text-decoration: underline;
+        }
+
+        .footer-date {
+            color: #94a3b8;
+            font-size: 0.8em;
+            margin-top: 4px;
+        }
+
+        @media (max-width: 600px) {
+            .header {
+                padding: 30px 20px;
+            }
+
+            .content {
+                padding: 25px 20px;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .config-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+
+            .config-value {
+                width: 100%;
+                text-align: center;
+            }
+
+            .command-block {
+                font-size: 0.8em;
+                padding: 14px;
+            }
+
+            .footer-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .footer-left, .footer-right {
+                text-align: center;
+            }
+
+            .regulations-content {
+                max-height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>Remote Environment Configuration</h1>
+    </div>
+
+    <div class="content">
+        <div class="section">
+            <h2 class="section-title">Connection Details</h2>
+            <div class="config-grid">
+                <div class="config-item">
+                    <span class="config-label">Server</span>
+                    <span class="config-value">x-tunnel.pl</span>
+                </div>
+                <div class="config-item">
+                    <span class="config-label">Username</span>
+                    <span class="config-value">{{USERNAME}}</span>
+                </div>
+                <div class="config-item">
+                    <span class="config-label">Password</span>
+                    <span class="config-value">{{PASSWORD}}</span>
+                </div>
+                <div class="config-item">
+                    <span class="config-label">SSH Port</span>
+                    <span class="config-value">{{SSH_PORT}}</span>
+                </div>
+                <div class="config-item">
+                    <span class="config-label">RDP Port</span>
+                    <span class="config-value">{{RDP_PORT}}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">SSH Connection</h2>
+            <p class="command-desc">Open a terminal and execute the command:</p>
+            <div class="command-block">ssh -p {{SSH_PORT}} {{USERNAME}}@x-tunnel.pl</div>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">Remote Desktop Connection</h2>
+            <p class="command-desc">Open an RDP client and enter the computer address:</p>
+            <div class="command-block">x-tunnel.pl:{{RDP_PORT}}</div>
+        </div>
+
+        <div class="warning-box">
+            <div class="warning-title">Important Information</div>
+            <div class="warning-content">
+                <ul>
+                    <li>Access credentials are confidential - do not share them with third parties</li>
+                    <li>Virtual machine usage is subject to the regulations below</li>
+                    <li>All activity may be monitored for security purposes</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="regulations-section">
+            <h2 class="regulations-title">Virtual Machine Usage Policy</h2>
+            <div class="regulations-content">
+                <p><strong>Effective from: June 20, 2025</strong></p>
+
+                <h2>1. Purpose and Scope</h2>
+                <p>This policy (hereinafter: "Policy") defines the rules for using virtual machines (hereinafter: "VM" or "Virtual Machines") provided to participants (hereinafter: "Participant" or "User") as part of training organized by Sages sp. z o.o. (hereinafter: "Organizer"). The purpose of the Policy is to ensure safe, lawful, and ethical use of the infrastructure, as well as to limit the potential legal liability of the Organizer.</p>
+
+                <h2>2. Definitions</h2>
+                <ol>
+                    <li><strong>Virtual Machine (VM)</strong> – a dedicated, isolated computing environment provided to the Participant by the Organizer exclusively for the duration and purposes of the training.</li>
+                    <li><strong>System</strong> – the entire technical infrastructure and software within which Virtual Machines operate.</li>
+                    <li><strong>Training Materials</strong> – content and resources provided to Participants by the Organizer as part of the training.</li>
+                    <li><strong>Prohibited Actions</strong> – any activities contrary to law, the Policy, good practices, or violating the rights of third parties.</li>
+                </ol>
+
+                <h2>3. Access Conditions</h2>
+                <ol>
+                    <li>The Organizer grants the Participant access to VM for the duration of the training and under the conditions specified in the Policy.</li>
+                    <li>Access is personal and may not be shared with third parties.</li>
+                    <li>Login credentials are confidential information; the Participant is obligated not to disclose them.</li>
+                </ol>
+
+                <h2>4. Usage Rules</h2>
+
+                <h3>4.1. Permitted Actions</h3>
+                <ol>
+                    <li>Performing tasks provided in the training program.</li>
+                    <li>Installing and configuring software necessary to complete exercises, provided it does not violate section 4.2.</li>
+                </ol>
+
+                <h3>4.2. Prohibited Actions</h3>
+                <ol>
+                    <li>Using VM for any unlawful activity, in particular:
+                        <ul>
+                            <li>unauthorized access to computer systems (hacking, phishing, etc.);</li>
+                            <li>distributing malicious software;</li>
+                            <li>violating copyright or licensing rights (piracy, illegal content sharing, cracks, "warez");</li>
+                            <li>storing, processing, or sharing illegal content (e.g., child pornography, hate speech, extremist content);</li>
+                            <li>conducting DDoS attacks, port scanning, or other activities interfering with third-party systems.</li>
+                        </ul>
+                    </li>
+                    <li>Modifying System security settings without the Organizer's consent.</li>
+                    <li>Sharing VM resources with other persons.</li>
+                    <li>Using VM for commercial or private purposes unrelated to the training.</li>
+                </ol>
+
+                <h2>5. Activity Monitoring and Logging</h2>
+                <ol>
+                    <li>All activity in the System may be monitored, logged, and analyzed by the Organizer or entities authorized by them.</li>
+                    <li>Logs may be used for security purposes, system development, and when necessary to demonstrate compliance with the law.</li>
+                    <li>The Participant consents to this by starting to use the VM.</li>
+                </ol>
+
+                <h2>6. Personal Data Protection and Confidentiality</h2>
+                <ol>
+                    <li>The Organizer processes Participants' personal data in accordance with applicable regulations (particularly GDPR) only to the extent necessary to conduct the training.</li>
+                    <li>The Participant undertakes not to process personal data in the VM that is not necessary for completing exercises.</li>
+                    <li>The User is responsible for the confidentiality of data they enter into the VM.</li>
+                </ol>
+
+                <h2>7. Participant's Liability</h2>
+                <ol>
+                    <li>The Participant bears full civil, criminal, and administrative liability for their actions in the VM.</li>
+                    <li>The Participant undertakes to indemnify the Organizer from liability for any third-party claims arising from the Participant's Prohibited Actions.</li>
+                </ol>
+
+                <h2>8. Organizer's Liability</h2>
+                <ol>
+                    <li>The Organizer exercises due diligence in maintaining the System but is not liable for damages resulting from improper or non-compliant use of the VM by the Participant.</li>
+                    <li>The Organizer is not responsible for content generated and stored by Participants in the VM.</li>
+                </ol>
+
+                <h2>9. Violations and Sanctions</h2>
+                <ol>
+                    <li>In case of Policy violation, the Organizer may, at their discretion:
+                        <ul>
+                            <li>block or restrict access to the VM;</li>
+                            <li>exclude the Participant from the training without the right to reimbursement;</li>
+                            <li>notify appropriate law enforcement agencies or take legal action.</li>
+                        </ul>
+                    </li>
+                    <li>Actions taken under section 9.1 do not exclude the Organizer's right to seek compensation.</li>
+                </ol>
+
+                <h2>10. Security Incident Reporting</h2>
+                <p>The Participant undertakes to immediately inform the Organizer of any security incident, irregularity, or suspected violation of the Policy rules.</p>
+
+                <h2>11. Final Provisions</h2>
+                <ol>
+                    <li>The Policy comes into effect on the date specified in the header.</li>
+                    <li>The Organizer reserves the right to make changes to the Policy; changes take effect from the moment of their publication and communication to Participants.</li>
+                    <li>In matters not regulated by the Policy, Polish law applies, in particular the Civil Code and the Act on Electronic Services.</li>
+                    <li>Any disputes arising in connection with the use of VM will be resolved by the court competent for the Organizer's registered office, unless mandatory provisions state otherwise.</li>
+                    <li>Starting to use the Virtual Machine is tantamount to accepting the Policy.</li>
+                </ol>
+
+                <p><em>Version 1.0 – 20.06.2025</em></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <div class="footer-content">
+            <div class="footer-left">
+                <div class="footer-logo">SAGES</div>
+                <p class="footer-tagline">Make IT happen</p>
+            </div>
+            <div class="footer-right">
+                <a href="https://www.sages.pl" target="_blank" class="footer-link">www.sages.pl</a>
+                <p class="footer-date">© 2025 Sages sp. z o.o.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Click to select functionality for credential values and commands
+    document.querySelectorAll('.config-value, .command-block').forEach(element => {
+        element.addEventListener('click', function() {
+            const selection = window.getSelection();
+            const range = document.createRange();
+            range.selectNodeContents(this);
+            selection.removeAllRanges();
+            selection.addRange(range);
+        });
+    });
+</script>
+</body>
+</html>
