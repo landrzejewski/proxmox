@@ -154,6 +154,6 @@ sysctl -p
 
 sudo nano /etc/xrdp/startwm.sh
 
-yad --text-info --center --title="Regulamin" --width=800 --height=600 \
+yad --text-info --center --title="Regulamin" --width=700 --height=800 \
     --filename="/home/policy.txt" --button=OK:0 --button=Cancel:1
 [ $? -eq 0 ]  || exit
