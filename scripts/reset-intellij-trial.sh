@@ -1,14 +1,7 @@
-In some cases, only these lines will work
-```sh
 for product in IntelliJIdea WebStorm DataGrip PhpStorm CLion PyCharm GoLand RubyMine; do
     rm -rf ~/.config/$product*/eval 2> /dev/null
     rm -rf ~/.config/JetBrains/$product*/eval 2> /dev/null
 done
-```
-
-But if not, try these
-
-```sh
 for product in IntelliJIdea WebStorm DataGrip PhpStorm CLion PyCharm GoLand RubyMine; do
     echo "[+] Resetting trial period for $product"
 
@@ -29,4 +22,3 @@ done
 
 echo "Removing userPrefs files..."
 rm -rf ~/.java/.userPrefs 2> /dev/null
-```
