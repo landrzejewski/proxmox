@@ -1,110 +1,110 @@
 
-*** Regulamin korzystania z maszyn wirtualnych podczas szkolenia ***
+  *** Regulamin korzystania z maszyn wirtualnych podczas szkolenia ***
 
- 1. Cel i zakres regulaminu
-    Niniejszy regulamin (dalej: „Regulamin”) określa zasady korzystania z
-    maszyn wirtualnych (dalej: „VM” lub „Maszyny Wirtualne”) udostępnianych
-    uczestnikom (dalej: „Uczestnik” lub „Użytkownik”) w ramach szkolenia
-    organizowanego przez Sages sp. z o.o. (dalej: „Organizator”). Celem
-    Regulaminu jest zapewnienie bezpiecznego, zgodnego z prawem i etycznego
-    korzystania z infrastruktury, a także ograniczenie potencjalne
-    odpowiedzialności prawnej Organizatora.
+  1. Cel i zakres regulaminu
+     Niniejszy regulamin (dalej: „Regulamin”) określa zasady korzystania z
+     maszyn wirtualnych (dalej: „VM” lub „Maszyny Wirtualne”) udostępnianych
+     uczestnikom (dalej: „Uczestnik” lub „Użytkownik”) w ramach szkolenia
+     organizowanego przez Sages sp. z o.o. (dalej: „Organizator”). Celem
+     Regulaminu jest zapewnienie bezpiecznego, zgodnego z prawem i etycznego
+     korzystania z infrastruktury, a także ograniczenie potencjalne
+     odpowiedzialności prawnej Organizatora.
 
- 2. Definicje
-    1. Maszyna Wirtualna (VM) – wydzielone, izolowane środowisko obliczeniowe
-    udostępniane Uczestnikowi przez Organizatora wyłącznie na czas i na
-    potrzeby szkolenia.
-    2. System – całość infrastruktury technicznej i oprogramowania, w ramach
-    których działają Maszyny Wirtualne.
-    3. Materiały Szkoleniowe – treści i zasoby przekazane Uczestnikom przez
-    Organizatora w ramach szkolenia.
-    4. Działania Niedozwolone – wszelkie czynności sprzeczne z prawem,
-    Regulaminem, dobrymi obyczajami lub naruszające prawa osób trzecich.
+  2. Definicje
+     1. Maszyna Wirtualna (VM) – wydzielone, izolowane środowisko obliczeniowe
+        udostępniane Uczestnikowi przez Organizatora wyłącznie na czas i na
+        potrzeby szkolenia.
+     2. System – całość infrastruktury technicznej i oprogramowania, w ramach
+        których działają Maszyny Wirtualne.
+     3. Materiały Szkoleniowe – treści i zasoby przekazane Uczestnikom przez
+        Organizatora w ramach szkolenia.
+     4. Działania Niedozwolone – wszelkie czynności sprzeczne z prawem,
+        Regulaminem, dobrymi obyczajami lub naruszające prawa osób trzecich.
 
-3. Warunki dostępu
-    1. Organizator przyznaje Uczestnikowi dostęp do VM na czas trwania
-    szkolenia oraz na warunkach określonych w Regulaminie.
-    2. Dostępy są imienne i nie mogą być udostępniane osobom trzecim.
-    3. Dane logowania są informacją poufną; Uczestnik zobowiązany jest do ich
-    nieujawniania.
+  3. Warunki dostępu
+     1. Organizator przyznaje Uczestnikowi dostęp do VM na czas trwania
+        szkolenia oraz na warunkach określonych w Regulaminie.
+     2. Dostępy są imienne i nie mogą być udostępniane osobom trzecim.
+     3. Dane logowania są informacją poufną; Uczestnik zobowiązany jest do ich
+        nieujawniania.
 
-4. Zasady korzystania
-    4.1. Działania dozwolone
-      1. Realizacja zadań przewidzianych programem szkolenia.
-      2. Instalacja i konfiguracja oprogramowania niezbędnego do wykonania
-      ćwiczeń, o ile nie powoduje to naruszenia pkt 4.2.
-    4.2. Działania zabronione
-      1. Wykorzystywanie VM do jakiejkolwiek działalności niezgodnej z
-      prawem, w szczególności:
-        a. nieautoryzowanego dostępu do systemów informatycznych (hacking,
-        phishing itp.);
-        b. rozpowszechniania złośliwego oprogramowania;
-        c. naruszania praw autorskich lub licencyjnych (piractwo, nielegalne
-        udostępnianie treści, cracki, "warez");
-        d. przechowywania, przetwarzania lub udostępniania
-        treści nielegalnych (np. pornografia dziecięca, mowa nienawiści, treści
-        ekstremistyczne);
-        e. prowadzenia ataków DDoS, skanowania portów lub innej aktywności
-        ingerującej w działanie systemów osób trzecich.
-      2. Modyfikowanie ustawień bezpieczeństwa Systemu bez zgody Organizatora.
-      3. Udostępnianie zasobów VM innym osobom.
-      4. Wykorzystywanie VM do celów komercyjnych lub prywatnych niezwiązanych
-      ze szkoleniem.
+  4. Zasady korzystania
+     4.1. Działania dozwolone
+          1. Realizacja zadań przewidzianych programem szkolenia.
+          2. Instalacja i konfiguracja oprogramowania niezbędnego do wykonania
+             ćwiczeń, o ile nie powoduje to naruszenia pkt 4.2.
+     4.2. Działania zabronione
+          1. Wykorzystywanie VM do jakiejkolwiek działalności niezgodnej z
+             prawem, w szczególności:
+             a. nieautoryzowanego dostępu do systemów informatycznych (hacking,
+                phishing itp.);
+             b. rozpowszechniania złośliwego oprogramowania;
+             c. naruszania praw autorskich lub licencyjnych (piractwo, nielegalne
+                udostępnianie treści, cracki, "warez");
+             d. przechowywania, przetwarzania lub udostępniania
+                treści nielegalnych (np. pornografia dziecięca, mowa nienawiści,
+                treści ekstremistyczne);
+             e. prowadzenia ataków DDoS, skanowania portów lub innej aktywności
+                ingerującej w działanie systemów osób trzecich.
+          2. Modyfikowanie ustawień bezpieczeństwa Systemu bez zgody Organizatora.
+          3. Udostępnianie zasobów VM innym osobom.
+          4. Wykorzystywanie VM do celów komercyjnych lub prywatnych niezwiązanych
+             ze szkoleniem.
 
-5. Monitorowanie i rejestracja aktywności
-    1. Wszelka aktywność w Systemie może być monitorowana, logowana i analizowana
-    przez Organizatora lub podmioty przez niego upoważnione.
-    2. Logi mogą być wykorzystane do celów bezpieczeństwa, rozwoju systemu,
-    a także w przypadku konieczności wykazania zgodności działań z prawem.
-    3. Uczestnik wyraża na to zgodę poprzez rozpoczęcie korzystania z VM.
+  5. Monitorowanie i rejestracja aktywności
+     1. Wszelka aktywność w Systemie może być monitorowana, logowana i analizowana
+        przez Organizatora lub podmioty przez niego upoważnione.
+     2. Logi mogą być wykorzystane do celów bezpieczeństwa, rozwoju systemu,
+        a także w przypadku konieczności wykazania zgodności działań z prawem.
+     3. Uczestnik wyraża na to zgodę poprzez rozpoczęcie korzystania z VM.
 
-6. Ochrona danych osobowych i poufność
-    1. Organizator przetwarza dane osobowe Uczestników zgodnie z obowiązującymi
-    przepisami (w szczególności RODO) wyłącznie w zakresie niezbędnym do
-    realizacji szkolenia.
-    2. Uczestnik zobowiązuje się nie przetwarzać w VM danych osobowych, które
-    nie są konieczne do realizacji ćwiczeń.
-    3. Użytkownik odpowiada za poufność danych, które sam wprowadza do VM.
+  6. Ochrona danych osobowych i poufność
+     1. Organizator przetwarza dane osobowe Uczestników zgodnie z obowiązującymi
+        przepisami (w szczególności RODO) wyłącznie w zakresie niezbędnym do
+        realizacji szkolenia.
+     2. Uczestnik zobowiązuje się nie przetwarzać w VM danych osobowych, które
+        nie są konieczne do realizacji ćwiczeń.
+     3. Użytkownik odpowiada za poufność danych, które sam wprowadza do VM.
 
-7. Odpowiedzialność Uczestnika
-    1. Uczestnik ponosi pełną odpowiedzialność cywilną, karną i administracyjną
-    za swoje działania w VM.
-    2. Uczestnik zobowiązuje się zwolnić Organizatora z odpowiedzialności z
-    tytułu ewentualnych roszczeń osób trzecich wynikających z Działań
-    Niedozwolonych Uczestnika.
+  7. Odpowiedzialność Uczestnika
+     1. Uczestnik ponosi pełną odpowiedzialność cywilną, karną i administracyjną
+        za swoje działania w VM.
+     2. Uczestnik zobowiązuje się zwolnić Organizatora z odpowiedzialności z
+        tytułu ewentualnych roszczeń osób trzecich wynikających z Działań
+        Niedozwolonych Uczestnika.
 
-8. Odpowiedzialność Organizatora
-    1. Organizator dokłada należytej staranności w utrzymaniu Systemu, jednak
-    nie ponosi odpowiedzialności za szkody wynikłe z niewłaściwego lub niezgodnego z
-    Regulaminem wykorzystania VM przez Uczestnika.
-    2. Organizator nie ponosi odpowiedzialności za treści generowane i przechowywane
-    przez Uczestników w VM.
+  8. Odpowiedzialność Organizatora
+     1. Organizator dokłada należytej staranności w utrzymaniu Systemu, jednak
+        nie ponosi odpowiedzialności za szkody wynikłe z niewłaściwego lub
+        niezgodnego z Regulaminem wykorzystania VM przez Uczestnika.
+     2. Organizator nie ponosi odpowiedzialności za treści generowane i
+        przechowywane przez Uczestników w VM.
 
-9. Naruszenia i sankcje
-    1. W przypadku stwierdzenia naruszenia Regulaminu Organizator może, według
-    własnego uznania:
-      a. zablokować lub ograniczyć dostęp do VM; b. wykluczyć Uczestnika ze
-      szkolenia bez prawa do zwrotu kosztów;
-      c. powiadomić odpowiednie organy ścigania lub podjąć kroki prawne.
-    2. Działania podjęte w związku z pkt 9.1 nie wyłączają prawa Organizatora
-    do dochodzenia odszkodowania.
+  9. Naruszenia i sankcje
+     1. W przypadku stwierdzenia naruszenia Regulaminu Organizator może, według
+        własnego uznania:
+        a. zablokować lub ograniczyć dostęp do VM; b. wykluczyć Uczestnika ze
+           szkolenia bez prawa do zwrotu kosztów;
+        c. powiadomić odpowiednie organy ścigania lub podjąć kroki prawne.
+     2. Działania podjęte w związku z pkt 9.1 nie wyłączają prawa Organizatora
+        do dochodzenia odszkodowania.
 
-10. Zgłaszanie incydentów bezpieczeństwa Uczestnik zobowiązuje się
-    niezwłocznie poinformować Organizatora o każdym incydencie bezpieczeństwa,
-    nieprawidłowości lub podejrzeniu naruszenia zasad Regulaminu.
+  10. Zgłaszanie incydentów bezpieczeństwa Uczestnik zobowiązuje się
+      niezwłocznie poinformować Organizatora o każdym incydencie bezpieczeństwa,
+      nieprawidłowości lub podejrzeniu naruszenia zasad Regulaminu.
 
-11. Postanowienia końcowe
-    1. Regulamin wchodzi w życie z dniem podanym w nagłówku.
-    2. Organizator zastrzega sobie prawo do wprowadzania zmian w Regulaminie;
-    zmiany obowiązują od momentu ich opublikowania i przekazania Uczestnikom.
-    3. W sprawach nieuregulowanych Regulaminem zastosowanie mają przepisy prawa
-    polskiego, w szczególności Kodeksu cywilnego oraz ustawy o świadczeniu usług
-    drogą elektroniczną.
-    4. Wszelkie spory wynikłe w związku z korzystaniem z VM rozstrzygane będą
-    przez sąd właściwy miejscowo dla siedziby Organizatora, o ile bezwzględnie
-    obowiązujące przepisy nie stanowią inaczej.
-    5. Rozpoczęcie korzystania z Maszyny Wirtualnej jest równoznaczne z akceptacją
-    Regulaminu.
+  11. Postanowienia końcowe
+      1. Regulamin wchodzi w życie z dniem podanym w nagłówku.
+      2. Organizator zastrzega sobie prawo do wprowadzania zmian w Regulaminie;
+         zmiany obowiązują od momentu ich opublikowania i przekazania Uczestnikom.
+      3. W sprawach nieuregulowanych Regulaminem zastosowanie mają przepisy prawa
+         polskiego, w szczególności Kodeksu cywilnego oraz ustawy o świadczeniu usług
+         drogą elektroniczną.
+      4. Wszelkie spory wynikłe w związku z korzystaniem z VM rozstrzygane będą
+         przez sąd właściwy miejscowo dla siedziby Organizatora, o ile bezwzględnie
+         obowiązujące przepisy nie stanowią inaczej.
+      5. Rozpoczęcie korzystania z Maszyny Wirtualnej jest równoznaczne z akceptacją
+         Regulaminu.
 
- Wersja 1.0 – 20.06.2025 r.
+  Wersja 1.0 – 20.06.2025 r.
 
