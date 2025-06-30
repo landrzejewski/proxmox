@@ -1,0 +1,9 @@
+Dostęp do maszyny wirtualnej oraz regulamin – szkolenie
+
+Dzień dobry,
+w załączniku znajduje się plik w formacie HTML, zawierający:
+ - indywidualne dane dostępowe do przypisanej maszyny wirtualnej,
+ - regulamin korzystania z zasobów udostępnionych w ramach szkolenia.
+Plik należy zapisać na komputerze, a następnie otworzyć w dowolnej przeglądarce internetowej (np. Google Chrome, Mozilla Firefox, Microsoft Edge). Otworzenie dokumentu umożliwi dostęp do informacji potrzebnych do rozpoczęcia pracy z maszyną wirtualną.
+Przed rozpoczęciem szkolenia należy zapoznać się z regulaminem – jego akceptacja jest warunkiem korzystania z udostępnionej infrastruktury.
+W przypadku jakichkolwiek tproblemów technicznych lub pytań dotyczących dostępu, proszę o kontakt – chętnie pomogę.

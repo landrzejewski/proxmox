@@ -1,5 +1,3 @@
-#!/bin/bash
-
 # Interfaces
 PUBLIC_IF="ens3"
 PRIVATE_IF="zt6nthpxpi"

@@ -1,5 +1,3 @@
-#!/bin/bash
-
 # Function to display usage
 show_usage() {
     echo "Usage: $0 [--lang pl|en] <number_of_students> OR $0 [--lang pl|en] <start> <end>"
