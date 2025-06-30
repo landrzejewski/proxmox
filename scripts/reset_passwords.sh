@@ -10,7 +10,7 @@ show_usage() {
     echo "Options:"
     echo "  --lang pl|en    Choose template language (default: pl)"
     echo ""
-    echo "Script will connect to each server via x-tunnel.pl using port 2000x"
+    echo "Script will connect to each server via sages.link using port 2000x"
     exit 1
 }
 
@@ -54,7 +54,7 @@ else
 fi
 
 # X-Tunnel configuration
-XTUNNEL_HOST="x-tunnel.pl"
+XTUNNEL_HOST="sages.link"
 
 # Function to generate random password (8 characters: letters and digits)
 generate_password() {
@@ -170,7 +170,7 @@ change_user_password() {
 echo "Starting student password management script..."
 echo "Using language: $LANGUAGE"
 echo "Processing students from $START_NUM to $END_NUM"
-echo "Connecting via x-tunnel.pl host with port 1000x..."
+echo "Connecting via sages.link host with port 1000x..."
 echo "Setting up credentials folder..."
 
 # Create credentials folder if it doesn't exist
