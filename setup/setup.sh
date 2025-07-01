@@ -146,6 +146,6 @@ chown $USER_NAME:$USER_NAME /home/$USER_NAME/.bashrc
 cp -f ./policy.txt "$POLICY_FILE"
 chattr +i "$POLICY_FILE"
 
-sed -i '1r ./policy_block.sh' /etc/xrsp/startwm.sh
+sed -i '1r ./policy_block.sh' /etc/xrdp/startwm.sh
 
 history -c

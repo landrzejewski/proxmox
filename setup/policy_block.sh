@@ -14,3 +14,4 @@ if [ ! -f "$ACCEPT_FILE" ]; then
     echo "Accepted by $USER on $(date)" > "$ACCEPT_FILE"
     chmod 644 "$ACCEPT_FILE"
 fi
+
