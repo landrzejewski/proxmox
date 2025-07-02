@@ -144,8 +144,17 @@ chown $USER_NAME:$USER_NAME /home/$USER_NAME/.bashrc
 
 # === Policy ===
 cp -f ./policy.txt "$POLICY_FILE"
-chattr +i "$POLICY_FILE"
 
+chattr +i "$POLICY_FILE"
 sed -i '1r ./policy_block.sh' /etc/xrdp/startwm.sh
+
+PAM_POLICY_FILE="/usr/local/bin/pam_policy.sh"
+copy ./pam_policy.sh "$PAM_POLICY_FILE"
+chmod +x "$PAM_POLICY_FILE"
+chattr +i "$PAM_POLICY_FILE"
+
+PAM_FILE="/etc/pam.d/sshd"
+PAM_LINE="auth required pam_exec.so /usr/local/bin/pam_policy.sh"
+sed -i "1i$PAM_LINE" "$PAM_FILE"
 
 history -c
