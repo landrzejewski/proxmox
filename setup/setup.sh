@@ -157,4 +157,10 @@ PAM_FILE="/etc/pam.d/sshd"
 PAM_LINE="auth required pam_exec.so /usr/local/bin/pam_policy.sh"
 sed -i "1i$PAM_LINE" "$PAM_FILE"
 
+# === Storage and logs ===
+sudo mkdir -p /mnt/shared
+
+cp ./archive_logs.sh /root
+chmod +x /root/archive_logs.sh
+
 history -c
