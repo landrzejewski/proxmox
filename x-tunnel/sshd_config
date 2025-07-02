@@ -1,0 +1,33 @@
+PubkeyAuthentication yes
+
+# Only allow protocol 2 (secure)
+Protocol 2
+
+# Use only strong ciphers and algorithms
+Ciphers aes256-gcm@openssh.com,chacha20-poly1305@openssh.com
+MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com
+KexAlgorithms curve25519-sha256,curve25519-sha256@libssh.org
+
+# Listen on default port or change it if desired
+Port 22
+
+# Disable root login completely
+PermitRootLogin no
+
+# Allow password authentication (if absolutely needed)
+PasswordAuthentication no
+
+# Avoid other weaker authentication methods
+ChallengeResponseAuthentication no
+UsePAM yes
+
+# Login grace period and retries
+LoginGraceTime 1m
+MaxAuthTries 3
+MaxSessions 3
+
+# Disable empty passwords
+PermitEmptyPasswords no
+
+# Log more verbosely
+LogLevel VERBOSE
