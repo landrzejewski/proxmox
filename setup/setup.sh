@@ -56,9 +56,9 @@ systemctl enable ssh
 systemctl restart ssh
 
 # === Configure XRDP ===
-echo xfce4-session > /home/$USER_NAME/.xsession
-chown $USER_NAME:$USER_NAME /home/$USER_NAME/.xsession
-adduser $USER_NAME ssl-cert
+echo xfce4-session > /home/"$USER_NAME"/.xsession
+chown "$USER_NAME":"$USER_NAME" /home/"$USER_NAME"/.xsession
+adduser "$USER_NAME" ssl-cert
 
 echo "
 # Network Buffer Optimizations for xrdp
@@ -101,24 +101,27 @@ sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin 
 usermod -aG docker "$USER_NAME"
 
 # === Install NVM and Node.js ===
-su - "$USER_NAME" -c 'curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash'
+su - "$USER_NAME" -c 'curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/master/install.sh | bash >/dev/null 2>&1'
 su - "$USER_NAME" -c '
   export NVM_DIR="$HOME/.nvm"
   [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
-  nvm install --lts
-  nvm use --lts
-  nvm alias default lts/*
+  nvm install --lts >/dev/null 2>&1
+  nvm use --lts >/dev/null 2>&1
+  nvm alias default lts/* >/dev/null 2>&1
 '
-
 echo 'export NVM_DIR="$HOME/.nvm"' >> /home/$USER_NAME/.bashrc
 echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' >> /home/$USER_NAME/.bashrc
-echo 'export SDKMAN_DIR="$HOME/.sdkman"' >> /home/$USER_NAME/.bashrc
-echo '[ -s "$SDKMAN_DIR/bin/sdkman-init.sh" ] && \. "$SDKMAN_DIR/bin/sdkman-init.sh"' >> /home/$USER_NAME/.bashrc
 chown $USER_NAME:$USER_NAME /home/$USER_NAME/.bashrc
 
 # === Install SDKMAN and Java ===
 su - "$USER_NAME" -c 'curl -s "https://get.sdkman.io" | bash'
-su - "$USER_NAME" -c 'source "$HOME/.sdkman/bin/sdkman-init.sh" && sdk install java && sdk default java $(sdk current java | grep -o "java-[^ ]*")'
+su - "$USER_NAME" -c '
+  source "$HOME/.sdkman/bin/sdkman-init.sh"
+  sdk install java
+  sdk default java $(sdk list java | grep -E "installed|>" | head -1 | awk "{print \$NF}")
+'
+echo 'export SDKMAN_DIR="$HOME/.sdkman"' >> /home/$USER_NAME/.bashrc
+echo '[ -s "$SDKMAN_DIR/bin/sdkman-init.sh" ] && \. "$SDKMAN_DIR/bin/sdkman-init.sh"' >> /home/$USER_NAME/.bashrc
 
 # === Install IntelliJ IDEA ===
 INTELLIJ_URL=$(curl -s https://data.services.jetbrains.com/products/releases?code=IIU\&latest=true\&type=release \
@@ -135,12 +138,6 @@ su - "$USER_NAME" -c "
 
 # === Install Visual Studio Code ===
 sudo snap install code --classic
-
-## === Install Rust ===
-su - "$USER_NAME" -c 'curl https://sh.rustup.rs -sSf | sh -s -- -y'
-echo 'source "$HOME/.cargo/env"' >> /home/$USER_NAME/.bashrc
-echo 'export PATH="$HOME/.cargo/bin:$PATH"' >> /home/$USER_NAME/.bashrc
-chown $USER_NAME:$USER_NAME /home/$USER_NAME/.bashrc
 
 # === Policy ===
 cp -f ./policy.txt "$POLICY_FILE"
