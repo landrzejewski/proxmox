@@ -16,3 +16,5 @@ if [ -t 0 ]; then
         logger -t SECURITY "$PAM_USER accepted policy on ssh connection level $(date)"
 fi
 exit 0
+
+

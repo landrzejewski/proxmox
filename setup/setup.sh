@@ -109,9 +109,9 @@ su - "$USER_NAME" -c '
   nvm use --lts >/dev/null 2>&1
   nvm alias default lts/* >/dev/null 2>&1
 '
-echo 'export NVM_DIR="$HOME/.nvm"' >> /home/$USER_NAME/.bashrc
-echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' >> /home/$USER_NAME/.bashrc
-chown $USER_NAME:$USER_NAME /home/$USER_NAME/.bashrc
+echo 'export NVM_DIR="$HOME/.nvm"' >> /home/"$USER_NAME"/.bashrc
+echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' >> /home/"$USER_NAME"/.bashrc
+chown "$USER_NAME":"$USER_NAME" /home/"$USER_NAME"/.bashrc
 
 # === Install SDKMAN and Java ===
 su - "$USER_NAME" -c 'curl -s "https://get.sdkman.io" | bash'
@@ -120,8 +120,8 @@ su - "$USER_NAME" -c '
   sdk install java
   sdk default java $(sdk list java | grep -E "installed|>" | head -1 | awk "{print \$NF}")
 '
-echo 'export SDKMAN_DIR="$HOME/.sdkman"' >> /home/$USER_NAME/.bashrc
-echo '[ -s "$SDKMAN_DIR/bin/sdkman-init.sh" ] && \. "$SDKMAN_DIR/bin/sdkman-init.sh"' >> /home/$USER_NAME/.bashrc
+echo 'export SDKMAN_DIR="$HOME/.sdkman"' >> /home/"$USER_NAME"/.bashrc
+echo '[ -s "$SDKMAN_DIR/bin/sdkman-init.sh" ] && \. "$SDKMAN_DIR/bin/sdkman-init.sh"' >> /home/"$USER_NAME"/.bashrc
 
 # === Install IntelliJ IDEA ===
 INTELLIJ_URL=$(curl -s https://data.services.jetbrains.com/products/releases?code=IIU\&latest=true\&type=release \
