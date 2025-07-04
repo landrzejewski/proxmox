@@ -12,7 +12,7 @@ USER_NAME="$3"
 USER_PASSWORD="$4"
 ZEROTIER_NETWORK_ID="363c67c55a1018b2"
 POLICY_FILE="/etc/policy.txt"
-POLICY_ACCEPT_FILE="/etc/policy_accepted-$USER"
+POLICY_ACCEPT_FILE="/etc/policy_accepted-$USER_NAME"
 
 # === Update system ===
 apt update && apt upgrade -y
@@ -46,9 +46,27 @@ if ! id "$USER_NAME" &>/dev/null; then
 fi
 
 # === Install base packages ===
-apt install -y sudo curl zip unzip build-essential ufw fail2ban \
-    openssh-server xrdp ssl-cert fce4 xfce4-goodies ca-certificates \
-    gnupg lsb-release software-properties-common nfs-common yad firefox chromium-browser
+sudo apt update && sudo apt install -y \
+    sudo \
+    curl \
+    zip \
+    unzip \
+    build-essential \
+    ufw \
+    fail2ban \
+    openssh-server \
+    xrdp \
+    ssl-cert \
+    xfce4 \
+    xfce4-goodies \
+    ca-certificates \
+    gnupg \
+    lsb-release \
+    software-properties-common \
+    nfs-common \
+    yad \
+    firefox \
+    chromium-browser
 
 # === Configure SSH ===
 cp -f ./sshd_config /etc/ssh/
