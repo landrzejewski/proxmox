@@ -145,6 +145,7 @@ cp -f ./policy.txt "$POLICY_FILE"
 cp -f ./ssh_policy.sh /etc/profile.d/ssh_policy.sh
 chmod +x /etc/profile.d/ssh_policy.sh
 chattr +i /etc/profile.d/ssh_policy.sh
+echo "source /etc/profile.d/ssh_policy.sh" >> /etc/bash.bashrc
 
 chattr +i "$POLICY_FILE"
 sed -i '1r ./xrdp_policy.sh' /etc/xrdp/startwm.sh
