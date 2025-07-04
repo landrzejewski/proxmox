@@ -9,11 +9,9 @@
   1. Niniejszy Regulamin określa zasady korzystania z maszyn wirtualnych (VM)
   udostępnianych przez prowadzącego szkolenie (dalej: "Administrator")
   uczestnikom szkoleń (dalej: "Użytkownik").
-  
   2. Każdy Użytkownik zobowiązany jest do zapoznania się z treścią Regulaminu
   przed rozpoczęciem korzystania z VM oraz do jego akceptacji poprzez system
   logowania.
-  
   3. Brak akceptacji Regulaminu uniemożliwia nawiązanie połączenia SSH/RDP z
   maszyną wirtualną.
   
@@ -21,40 +19,33 @@
   
   1. Dostęp do VM jest przyznawany wyłącznie na czas trwania szkolenia i w
   celach edukacyjnych związanych z programem szkolenia.
-  
   2. Każdy Użytkownik otrzymuje indywidualne dane dostępowe (login typu:
   student1, student2, itp. oraz hasło) przesłane na wskazany adres e-mail.
-  
   3. Dane dostępowe są poufne i nie mogą być udostępniane osobom trzecim.
-  
-  4. Dostęp jest realizowany poprzez serwer proxy, który rejestruje wszystkie 
+  4. Dostęp jest realizowany poprzez serwer proxy, który rejestruje wszystkie
   połączenia.
   
   § 3. DOZWOLONE WYKORZYSTANIE
   
-  Użytkownik może wykorzystywać VM wyłącznie do:
-  - Realizacji zadań i ćwiczeń przewidzianych programem szkolenia
-  - Instalacji oprogramowania niezbędnego do realizacji ćwiczeń szkoleniowych
-  - Testowania rozwiązań w zakresie objętym tematyką szkolenia
+  1. Użytkownik może wykorzystywać VM wyłącznie do:
+     - Realizacji zadań i ćwiczeń przewidzianych programem szkolenia
+     - Instalacji oprogramowania niezbędnego do realizacji ćwiczeń szkoleniowych
+     - Testowania rozwiązań w zakresie objętym tematyką szkolenia
   
   § 4. DZIAŁANIA ZABRONIONE
   
-  Użytkownikowi kategorycznie zabrania się:
-  
-  1. W zakresie bezpieczeństwa:
-     - Przeprowadzania jakichkolwiek ataków sieciowych (DDoS, brute-force,
-     port scanning)
+  1. Użytkownikowi kategorycznie zabrania się:
+  a) W zakresie bezpieczeństwa:
+     - Przeprowadzania jakichkolwiek ataków sieciowych (DDoS, brute-force, port scanning)
      - Próby nieautoryzowanego dostępu do innych systemów
      - Instalacji lub rozpowszechniania złośliwego oprogramowania
      - Działań mających na celu obejście zabezpieczeń systemu
-  
-  2. W zakresie zgodności z prawem:
+  b) W zakresie zgodności z prawem:
      - Wykorzystywania VM do jakiejkolwiek działalności niezgodnej z prawem
      - Naruszania praw autorskich lub licencyjnych
      - Przechowywania lub udostępniania treści nielegalnych
      - Prowadzenia działalności komercyjnej
-  
-  3. W zakresie etyki:
+  c) W zakresie etyki:
      - Wykorzystywania zasobów VM do celów niezwiązanych ze szkoleniem
      - Działań mogących zakłócić pracę innych Użytkowników
      - Modyfikacji ustawień systemowych bez zgody Administratora
@@ -66,7 +57,6 @@
      - Akceptację regulaminu przez każdego Użytkownika
      - Adres IP źródłowy połączenia
      - Podstawową aktywność systemową
-  
   2. Cel rejestrowania:
      - Zapewnienie bezpieczeństwa infrastruktury
      - Możliwość wykazania przestrzegania zasad przez Użytkowników
@@ -79,12 +69,10 @@
      dostępowych
      - Szkody wynikłe z naruszenia postanowień Regulaminu
      - Konsekwencje prawne swoich działań
-  
   2. Administrator nie ponosi odpowiedzialności za:
      - Działania Użytkownika niezgodne z prawem lub Regulaminem
      - Utratę danych wprowadzonych przez Użytkownika
      - Przerwy w dostępie wynikłe z konieczności konserwacji
-  
   3. Użytkownik zobowiązuje się do:
      - Zwolnienia Administratora z wszelkiej odpowiedzialności związanej
      ze swoimi działaniami
@@ -93,32 +81,28 @@
   § 7. SANKCJE
   
   W przypadku naruszenia Regulaminu Administrator może:
-  1. Natychmiast zablokować dostęp do VM
-  2. Wykluczyć Użytkownika ze szkolenia bez zwrotu kosztów
-  3. Powiadomić odpowiednie organy ścigania
-  4. Dochodzić odszkodowania na drodze prawnej
+    - Natychmiast zablokować dostęp do VM
+    - Wykluczyć Użytkownika ze szkolenia bez zwrotu kosztów
+    - Powiadomić odpowiednie organy ścigania
+    - Dochodzić odszkodowania na drodze prawnej
   
   § 8. OCHRONA DANYCH OSOBOWYCH
   
   1. Administrator danych:
      - SAGES Sp. z o.o. z siedzibą w Warszawie przy ul. Nowogrodzkiej 62c.
      - Kontakt: iod@sages.pl
-  
   2. Zakres przetwarzanych danych:
      - Login systemowy (student1, student2, itp.)
      - Adres e-mail (do wysyłki danych dostępowych)
      - Adres IP połączenia
      - Data i czas akceptacji regulaminu
-  
   3. Podstawa prawna:
      - Art. 6 ust. 1 lit. f RODO - uzasadniony interes administratora
      (bezpieczeństwo infrastruktury)
      - Art. 6 ust. 1 lit. b RODO - wykonanie umowy szkoleniowej
-  
   4. Okres przechowywania:
      - Logi systemowe: 90 dni od zakończenia szkolenia
      - Dane kontaktowe: do czasu wycofania zgody
-  
   5. Prawa Użytkownika:
      - Dostęp do danych
      - Sprostowanie lub usunięcie danych
@@ -128,12 +112,9 @@
   
   1. Akceptacja Regulaminu następuje poprzez wpisanie odpowiedniej
   komendy lub jego zatwierdzenie podczas logowania do VM.
-  
   2. Administrator zastrzega sobie prawo do zmiany Regulaminu;
   o zmianach Użytkownicy zostaną powiadomieni.
-  
   3. W sprawach nieuregulowanych stosuje się przepisy prawa polskiego.
-  
   4. Ewentualne spory będą rozstrzygane przez sąd właściwy dla
   siedziby Administratora.
 
