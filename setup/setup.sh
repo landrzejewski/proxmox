@@ -10,7 +10,7 @@ HOST_NAME="$1"
 ROOT_PASSWORD="$2"
 USER_NAME="$3"
 USER_PASSWORD="$4"
-ZEROTIER_NETWORK_ID=""
+ZEROTIER_NETWORK_ID="363c67c55a1018b2"
 POLICY_FILE="/etc/policy.txt"
 POLICY_ACCEPT_FILE="/etc/policy_accepted-$USER"
 
@@ -142,12 +142,12 @@ sudo snap install code --classic
 # === Policy ===
 cp -f ./policy.txt "$POLICY_FILE"
 
-chattr +i "$POLICY_FILE"
-sed -i '1r ./policy_block.sh' /etc/xrdp/startwm.sh
+cp -f ./ssh_policy.sh /etc/profile.d/ssh_policy.sh
+chmod +x /etc/profile.d/ssh_policy.sh
+chattr +i /etc/profile.d/ssh_policy.sh
 
-cp -f ./require_policy_accept.sh /etc/profile.d/require_policy_accept.sh
-chmod +x /etc/profile.d/require_policy_accept.sh
-chattr +i /etc/profile.d/require_policy_accept.sh
+chattr +i "$POLICY_FILE"
+sed -i '1r ./xrdp_policy.sh' /etc/xrdp/startwm.sh
 
 # === Storage and logs ===
 sudo mkdir -p /mnt/shared
