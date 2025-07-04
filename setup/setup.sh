@@ -145,14 +145,9 @@ cp -f ./policy.txt "$POLICY_FILE"
 chattr +i "$POLICY_FILE"
 sed -i '1r ./policy_block.sh' /etc/xrdp/startwm.sh
 
-PAM_POLICY_FILE="/usr/local/bin/pam_policy.sh"
-cp ./pam_policy.sh "$PAM_POLICY_FILE"
-chmod +x "$PAM_POLICY_FILE"
-chattr +i "$PAM_POLICY_FILE"
-
-PAM_FILE="/etc/pam.d/sshd"
-PAM_LINE="auth required pam_exec.so /usr/local/bin/pam_policy.sh"
-sed -i "1i$PAM_LINE" "$PAM_FILE"
+cp -f ./require_policy_accept.sh /etc/profile.d/require_policy_accept.sh
+chmod +x /etc/profile.d/require_policy_accept.sh
+chattr +i /etc/profile.d/require_policy_accept.sh
 
 # === Storage and logs ===
 sudo mkdir -p /mnt/shared
