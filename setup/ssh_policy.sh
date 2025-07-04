@@ -1,9 +1,10 @@
 #!/bin/bash
 
 POLICY_FILE="/etc/policy.txt"
+ACCEPT_FILE="$HOME/.policy_accepted"
 
 # Run only for interactive shells with a TTY
-if [[ -t 0 && -z "$POLICY_ACCEPTED" ]]; then
+if [[ -t 0 && -z "$POLICY_ACCEPTED" && ! -f "$ACCEPT_FILE" ]]; then
     # Trap signals to prevent bypassing the policy
     trap '' INT TERM QUIT TSTP
 
@@ -21,7 +22,8 @@ if [[ -t 0 && -z "$POLICY_ACCEPTED" ]]; then
             # Use -r to prevent backslash escaping
             if read -r -p "Czy akceptujesz regulamin? Wpisz 'tak', aby kontynuować: " response; then
                 if [[ "$response" == "tak" ]]; then
-                    logger -t SECURITY "$(whoami) accepted policy from $(tty) at $(date)"
+                    echo "accepted" > "$ACCEPT_FILE"
+                    logger -t SECURITY "$(whoami) accepted policy via /etc/profile.d at $(date)"
                     export POLICY_ACCEPTED=1
                     # Restore signal handling
                     trap - INT TERM QUIT TSTP
@@ -46,7 +48,7 @@ if [[ -t 0 && -z "$POLICY_ACCEPTED" ]]; then
 
         # If we get here, user failed to accept after max attempts
         echo "Odmowa dostępu. Regulamin nie został zaakceptowany."
-        logger -t SECURITY "$(whoami) failed to accept policy after $max_attempts attempts from $(tty) at $(date)"
+        logger -t SECURITY "$(whoami) failed to accept policy after $max_attempts attempts at $(date)"
 
         # Force logout
         if [[ -n "$SSH_TTY" ]]; then

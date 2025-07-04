@@ -47,7 +47,7 @@ fi
 
 # === Install base packages ===
 apt install -y sudo curl zip unzip build-essential ufw fail2ban \
-    openssh-server xrdp ssl-cert #xfce4 xfce4-goodies ca-certificates \
+    openssh-server xrdp ssl-cert fce4 xfce4-goodies ca-certificates \
     gnupg lsb-release software-properties-common nfs-common yad firefox chromium-browser
 
 # === Configure SSH ===
@@ -56,9 +56,9 @@ systemctl enable ssh
 systemctl restart ssh
 
 # === Configure XRDP ===
-#echo xfce4-session > /home/"$USER_NAME"/.xsession
-#chown "$USER_NAME":"$USER_NAME" /home/"$USER_NAME"/.xsession
-#adduser "$USER_NAME" ssl-cert
+echo xfce4-session > /home/"$USER_NAME"/.xsession
+chown "$USER_NAME":"$USER_NAME" /home/"$USER_NAME"/.xsession
+adduser "$USER_NAME" ssl-cert
 
 echo "
 # Network Buffer Optimizations for xrdp
