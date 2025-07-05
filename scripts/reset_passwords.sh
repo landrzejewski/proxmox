@@ -59,7 +59,7 @@ XTUNNEL_HOST="sages.link"
 # Function to generate random password (8 characters: letters and digits)
 generate_password() {
     # Fix for macOS "Illegal byte sequence" error
-    LC_ALL=C tr -dc 'A-Za-z0-9!&@%()$' < /dev/urandom | head -c 8
+    LC_ALL=C tr -dc 'A-Za-z0-9!&@%$' < /dev/urandom | head -c 10
 }
 
 # Function to read current password from file
