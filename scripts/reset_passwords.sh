@@ -153,9 +153,22 @@ change_user_password() {
 
     echo "Connecting to $XTUNNEL_HOST:$ssh_port as user $username to change password..."
 
+    # First, remove any existing known_hosts entry for this host:port combination
+    ssh-keygen -f "$HOME/.ssh/known_hosts" -R "[$XTUNNEL_HOST]:$ssh_port" 2>/dev/null
+
     # Use sshpass to connect as the user and change their own password
-    # Using printf instead of echo -e for better compatibility
-    sshpass -p "$old_password" ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 -o BatchMode=no -p "$ssh_port" "$username"@"$XTUNNEL_HOST" "printf '%s\n%s\n%s\n' '$old_password' '$new_password' '$new_password' | passwd"
+    # Added more SSH options to handle host key issues
+    sshpass -p "$old_password" ssh \
+        -o StrictHostKeyChecking=no \
+        -o UserKnownHostsFile=/dev/null \
+        -o CheckHostIP=no \
+        -o ConnectTimeout=10 \
+        -o BatchMode=no \
+        -o PasswordAuthentication=yes \
+        -o PreferredAuthentications=password \
+        -p "$ssh_port" \
+        "$username"@"$XTUNNEL_HOST" \
+        "printf '%s\n%s\n%s\n' '$old_password' '$new_password' '$new_password' | passwd"
 
     local ssh_result=$?
     if [ $ssh_result -eq 0 ]; then
