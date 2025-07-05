@@ -17,9 +17,32 @@ POLICY_ACCEPT_FILE="/etc/policy_accepted-$USER_NAME"
 # === Update system ===
 apt update && apt upgrade -y
 
+# === Install base packages ===
+sudo apt update && sudo apt install -y \
+    sudo \
+    curl \
+    zip \
+    unzip \
+    build-essential \
+    ufw \
+    fail2ban \
+    openssh-server \
+    xrdp \
+    ssl-cert \
+    xfce4 \
+    xfce4-goodies \
+    ca-certificates \
+    gnupg \
+    lsb-release \
+    software-properties-common \
+    nfs-common \
+    yad \
+    firefox \
+    chromium-browser
+
 # === Install ZeroTier ===
 curl -s https://install.zerotier.com | bash
-#zerotier-cli join "$ZEROTIER_NETWORK_ID"
+zerotier-cli join "$ZEROTIER_NETWORK_ID"
 
 # === Set hostname ===
 hostnamectl set-hostname "$HOST_NAME"
@@ -44,29 +67,6 @@ if ! id "$USER_NAME" &>/dev/null; then
   echo "$USER_NAME:$USER_PASSWORD" | chpasswd
   usermod -aG sudo "$USER_NAME"
 fi
-
-# === Install base packages ===
-sudo apt update && sudo apt install -y \
-    sudo \
-    curl \
-    zip \
-    unzip \
-    build-essential \
-    ufw \
-    fail2ban \
-    openssh-server \
-    xrdp \
-    ssl-cert \
-    xfce4 \
-    xfce4-goodies \
-    ca-certificates \
-    gnupg \
-    lsb-release \
-    software-properties-common \
-    nfs-common \
-    yad \
-    firefox \
-    chromium-browser
 
 # === Configure SSH ===
 cp -f ./sshd_config /etc/ssh/
