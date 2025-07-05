@@ -6,6 +6,129 @@
 -A PREROUTING -d 172.18.0.4/32 ! -i br-38086c4b1c27 -j DROP
 COMMIT
 
+*nat
+:PREROUTING ACCEPT [0:0]
+:INPUT ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+:POSTROUTING ACCEPT [0:0]
+:DOCKER - [0:0]
+
+# Port forwarding for SSH (ports 10001-10050 -> 192.168.195.101-150:22)
+-A PREROUTING -p tcp --dport 10001 -j DNAT --to-destination 192.168.195.101:22
+-A PREROUTING -p tcp --dport 10002 -j DNAT --to-destination 192.168.195.102:22
+-A PREROUTING -p tcp --dport 10003 -j DNAT --to-destination 192.168.195.103:22
+-A PREROUTING -p tcp --dport 10004 -j DNAT --to-destination 192.168.195.104:22
+-A PREROUTING -p tcp --dport 10005 -j DNAT --to-destination 192.168.195.105:22
+-A PREROUTING -p tcp --dport 10006 -j DNAT --to-destination 192.168.195.106:22
+-A PREROUTING -p tcp --dport 10007 -j DNAT --to-destination 192.168.195.107:22
+-A PREROUTING -p tcp --dport 10008 -j DNAT --to-destination 192.168.195.108:22
+-A PREROUTING -p tcp --dport 10009 -j DNAT --to-destination 192.168.195.109:22
+-A PREROUTING -p tcp --dport 10010 -j DNAT --to-destination 192.168.195.110:22
+-A PREROUTING -p tcp --dport 10011 -j DNAT --to-destination 192.168.195.111:22
+-A PREROUTING -p tcp --dport 10012 -j DNAT --to-destination 192.168.195.112:22
+-A PREROUTING -p tcp --dport 10013 -j DNAT --to-destination 192.168.195.113:22
+-A PREROUTING -p tcp --dport 10014 -j DNAT --to-destination 192.168.195.114:22
+-A PREROUTING -p tcp --dport 10015 -j DNAT --to-destination 192.168.195.115:22
+-A PREROUTING -p tcp --dport 10016 -j DNAT --to-destination 192.168.195.116:22
+-A PREROUTING -p tcp --dport 10017 -j DNAT --to-destination 192.168.195.117:22
+-A PREROUTING -p tcp --dport 10018 -j DNAT --to-destination 192.168.195.118:22
+-A PREROUTING -p tcp --dport 10019 -j DNAT --to-destination 192.168.195.119:22
+-A PREROUTING -p tcp --dport 10020 -j DNAT --to-destination 192.168.195.120:22
+-A PREROUTING -p tcp --dport 10021 -j DNAT --to-destination 192.168.195.121:22
+-A PREROUTING -p tcp --dport 10022 -j DNAT --to-destination 192.168.195.122:22
+-A PREROUTING -p tcp --dport 10023 -j DNAT --to-destination 192.168.195.123:22
+-A PREROUTING -p tcp --dport 10024 -j DNAT --to-destination 192.168.195.124:22
+-A PREROUTING -p tcp --dport 10025 -j DNAT --to-destination 192.168.195.125:22
+-A PREROUTING -p tcp --dport 10026 -j DNAT --to-destination 192.168.195.126:22
+-A PREROUTING -p tcp --dport 10027 -j DNAT --to-destination 192.168.195.127:22
+-A PREROUTING -p tcp --dport 10028 -j DNAT --to-destination 192.168.195.128:22
+-A PREROUTING -p tcp --dport 10029 -j DNAT --to-destination 192.168.195.129:22
+-A PREROUTING -p tcp --dport 10030 -j DNAT --to-destination 192.168.195.130:22
+-A PREROUTING -p tcp --dport 10031 -j DNAT --to-destination 192.168.195.131:22
+-A PREROUTING -p tcp --dport 10032 -j DNAT --to-destination 192.168.195.132:22
+-A PREROUTING -p tcp --dport 10033 -j DNAT --to-destination 192.168.195.133:22
+-A PREROUTING -p tcp --dport 10034 -j DNAT --to-destination 192.168.195.134:22
+-A PREROUTING -p tcp --dport 10035 -j DNAT --to-destination 192.168.195.135:22
+-A PREROUTING -p tcp --dport 10036 -j DNAT --to-destination 192.168.195.136:22
+-A PREROUTING -p tcp --dport 10037 -j DNAT --to-destination 192.168.195.137:22
+-A PREROUTING -p tcp --dport 10038 -j DNAT --to-destination 192.168.195.138:22
+-A PREROUTING -p tcp --dport 10039 -j DNAT --to-destination 192.168.195.139:22
+-A PREROUTING -p tcp --dport 10040 -j DNAT --to-destination 192.168.195.140:22
+-A PREROUTING -p tcp --dport 10041 -j DNAT --to-destination 192.168.195.141:22
+-A PREROUTING -p tcp --dport 10042 -j DNAT --to-destination 192.168.195.142:22
+-A PREROUTING -p tcp --dport 10043 -j DNAT --to-destination 192.168.195.143:22
+-A PREROUTING -p tcp --dport 10044 -j DNAT --to-destination 192.168.195.144:22
+-A PREROUTING -p tcp --dport 10045 -j DNAT --to-destination 192.168.195.145:22
+-A PREROUTING -p tcp --dport 10046 -j DNAT --to-destination 192.168.195.146:22
+-A PREROUTING -p tcp --dport 10047 -j DNAT --to-destination 192.168.195.147:22
+-A PREROUTING -p tcp --dport 10048 -j DNAT --to-destination 192.168.195.148:22
+-A PREROUTING -p tcp --dport 10049 -j DNAT --to-destination 192.168.195.149:22
+-A PREROUTING -p tcp --dport 10050 -j DNAT --to-destination 192.168.195.150:22
+
+# Port forwarding for XRDP (ports 20001-20050 -> 192.168.195.101-150:3389)
+-A PREROUTING -p tcp --dport 20001 -j DNAT --to-destination 192.168.195.101:3389
+-A PREROUTING -p tcp --dport 20002 -j DNAT --to-destination 192.168.195.102:3389
+-A PREROUTING -p tcp --dport 20003 -j DNAT --to-destination 192.168.195.103:3389
+-A PREROUTING -p tcp --dport 20004 -j DNAT --to-destination 192.168.195.104:3389
+-A PREROUTING -p tcp --dport 20005 -j DNAT --to-destination 192.168.195.105:3389
+-A PREROUTING -p tcp --dport 20006 -j DNAT --to-destination 192.168.195.106:3389
+-A PREROUTING -p tcp --dport 20007 -j DNAT --to-destination 192.168.195.107:3389
+-A PREROUTING -p tcp --dport 20008 -j DNAT --to-destination 192.168.195.108:3389
+-A PREROUTING -p tcp --dport 20009 -j DNAT --to-destination 192.168.195.109:3389
+-A PREROUTING -p tcp --dport 20010 -j DNAT --to-destination 192.168.195.110:3389
+-A PREROUTING -p tcp --dport 20011 -j DNAT --to-destination 192.168.195.111:3389
+-A PREROUTING -p tcp --dport 20012 -j DNAT --to-destination 192.168.195.112:3389
+-A PREROUTING -p tcp --dport 20013 -j DNAT --to-destination 192.168.195.113:3389
+-A PREROUTING -p tcp --dport 20014 -j DNAT --to-destination 192.168.195.114:3389
+-A PREROUTING -p tcp --dport 20015 -j DNAT --to-destination 192.168.195.115:3389
+-A PREROUTING -p tcp --dport 20016 -j DNAT --to-destination 192.168.195.116:3389
+-A PREROUTING -p tcp --dport 20017 -j DNAT --to-destination 192.168.195.117:3389
+-A PREROUTING -p tcp --dport 20018 -j DNAT --to-destination 192.168.195.118:3389
+-A PREROUTING -p tcp --dport 20019 -j DNAT --to-destination 192.168.195.119:3389
+-A PREROUTING -p tcp --dport 20020 -j DNAT --to-destination 192.168.195.120:3389
+-A PREROUTING -p tcp --dport 20021 -j DNAT --to-destination 192.168.195.121:3389
+-A PREROUTING -p tcp --dport 20022 -j DNAT --to-destination 192.168.195.122:3389
+-A PREROUTING -p tcp --dport 20023 -j DNAT --to-destination 192.168.195.123:3389
+-A PREROUTING -p tcp --dport 20024 -j DNAT --to-destination 192.168.195.124:3389
+-A PREROUTING -p tcp --dport 20025 -j DNAT --to-destination 192.168.195.125:3389
+-A PREROUTING -p tcp --dport 20026 -j DNAT --to-destination 192.168.195.126:3389
+-A PREROUTING -p tcp --dport 20027 -j DNAT --to-destination 192.168.195.127:3389
+-A PREROUTING -p tcp --dport 20028 -j DNAT --to-destination 192.168.195.128:3389
+-A PREROUTING -p tcp --dport 20029 -j DNAT --to-destination 192.168.195.129:3389
+-A PREROUTING -p tcp --dport 20030 -j DNAT --to-destination 192.168.195.130:3389
+-A PREROUTING -p tcp --dport 20031 -j DNAT --to-destination 192.168.195.131:3389
+-A PREROUTING -p tcp --dport 20032 -j DNAT --to-destination 192.168.195.132:3389
+-A PREROUTING -p tcp --dport 20033 -j DNAT --to-destination 192.168.195.133:3389
+-A PREROUTING -p tcp --dport 20034 -j DNAT --to-destination 192.168.195.134:3389
+-A PREROUTING -p tcp --dport 20035 -j DNAT --to-destination 192.168.195.135:3389
+-A PREROUTING -p tcp --dport 20036 -j DNAT --to-destination 192.168.195.136:3389
+-A PREROUTING -p tcp --dport 20037 -j DNAT --to-destination 192.168.195.137:3389
+-A PREROUTING -p tcp --dport 20038 -j DNAT --to-destination 192.168.195.138:3389
+-A PREROUTING -p tcp --dport 20039 -j DNAT --to-destination 192.168.195.139:3389
+-A PREROUTING -p tcp --dport 20040 -j DNAT --to-destination 192.168.195.140:3389
+-A PREROUTING -p tcp --dport 20041 -j DNAT --to-destination 192.168.195.141:3389
+-A PREROUTING -p tcp --dport 20042 -j DNAT --to-destination 192.168.195.142:3389
+-A PREROUTING -p tcp --dport 20043 -j DNAT --to-destination 192.168.195.143:3389
+-A PREROUTING -p tcp --dport 20044 -j DNAT --to-destination 192.168.195.144:3389
+-A PREROUTING -p tcp --dport 20045 -j DNAT --to-destination 192.168.195.145:3389
+-A PREROUTING -p tcp --dport 20046 -j DNAT --to-destination 192.168.195.146:3389
+-A PREROUTING -p tcp --dport 20047 -j DNAT --to-destination 192.168.195.147:3389
+-A PREROUTING -p tcp --dport 20048 -j DNAT --to-destination 192.168.195.148:3389
+-A PREROUTING -p tcp --dport 20049 -j DNAT --to-destination 192.168.195.149:3389
+-A PREROUTING -p tcp --dport 20050 -j DNAT --to-destination 192.168.195.150:3389
+
+# Masquerade for outgoing traffic from internal network
+-A POSTROUTING -s 192.168.195.0/24 -j MASQUERADE
+
+# Docker NAT rules
+-A PREROUTING -m addrtype --dst-type LOCAL -j DOCKER
+-A OUTPUT ! -d 127.0.0.0/8 -m addrtype --dst-type LOCAL -j DOCKER
+-A POSTROUTING -s 172.17.0.0/16 ! -o docker0 -j MASQUERADE
+-A POSTROUTING -s 172.18.0.0/16 ! -o br-38086c4b1c27 -j MASQUERADE
+-A DOCKER -i br-38086c4b1c27 -j RETURN
+
+COMMIT
+
 *filter
 :INPUT ACCEPT [0:0]
 :FORWARD ACCEPT [0:0]
