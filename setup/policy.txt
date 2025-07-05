@@ -36,7 +36,8 @@
   
   1. Użytkownikowi kategorycznie zabrania się:
   a) W zakresie bezpieczeństwa:
-     - Przeprowadzania jakichkolwiek ataków sieciowych (DDoS, brute-force, port scanning)
+     - Przeprowadzania jakichkolwiek ataków sieciowych np. DDoS, brute-force,
+     port scanning
      - Próby nieautoryzowanego dostępu do innych systemów
      - Instalacji lub rozpowszechniania złośliwego oprogramowania
      - Działań mających na celu obejście zabezpieczeń systemu

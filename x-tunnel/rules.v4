@@ -117,6 +117,9 @@ COMMIT
 -A PREROUTING -p tcp --dport 20049 -j DNAT --to-destination 192.168.195.149:3389
 -A PREROUTING -p tcp --dport 20050 -j DNAT --to-destination 192.168.195.150:3389
 
+# SNAT for ZeroTier traffic to ensure proper return path
+-A POSTROUTING -o zt6nthpxpi -d 192.168.195.0/24 -p tcp -m multiport --dports 22,3389 -j MASQUERADE
+
 # Masquerade for outgoing traffic from internal network
 -A POSTROUTING -s 192.168.195.0/24 -j MASQUERADE
 
