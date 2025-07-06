@@ -1,169 +1,4 @@
-<script>
-    // Function to copy text to clipboard and show feedback
-    function copyToClipboard(text, element) {
-        // Clear any existing selection to prevent text highlighting
-        window.getSelection().removeAllRanges();
-
-        // Focus the document before copying
-        if (!document.hasFocus()) {
-            window.focus();
-        }
-
-        // Try modern clipboard API first, then fallback
-        if (navigator.clipboard && window.isSecureContext) {
-            navigator.clipboard.writeText(text).then(function() {
-                showCopyFeedback(element, 'Copied!');
-            }).catch(function(err) {
-                // Fallback method
-                copyUsingExecCommand(text, element);
-            });
-        } else {
-            // Use fallback for older browsers or non-secure contexts
-            copyUsingExecCommand(text, element);
-        }
-    }
-
-    // Fallback copy method
-    function copyUsingExecCommand(text, element) {
-        const textArea = document.createElement('textarea');
-        textArea.value = text;
-        textArea.style.position = 'fixed';
-        textArea.style.left = '-999999px';
-        textArea.style.top = '-999999px';
-        document.body.appendChild(textArea);
-        textArea.focus();
-        textArea.select();
-
-        try {
-            document.execCommand('copy');
-            showCopyFeedback(element, 'Copied!');
-        } catch (err) {
-            console.error('Failed to copy: ', err);
-            alert('Failed to copy to clipboard. Please copy manually.');
-        } finally {
-            textArea.remove();
-        }
-    }
-
-    // Show visual feedback after copying
-    function showCopyFeedback(element, message) {
-        // Create and show tooltip
-        const tooltip = document.createElement('div');
-        tooltip.textContent = message;
-        tooltip.style.cssText = `
-            position: fixed;
-            background: #0F172AFF;
-            color: white;
-            padding: 6px 12px;
-            border-radius: 4px;
-            font-size: 0.8em;
-            font-weight: 500;
-            z-index: 10000;
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.2s ease;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        `;
-
-        // Position tooltip above the element
-        const rect = element.getBoundingClientRect();
-        tooltip.style.left = (rect.left + rect.width / 2) + 'px';
-        tooltip.style.top = (rect.top - 35) + 'px';
-        tooltip.style.transform = 'translateX(-50%)';
-
-        document.body.appendChild(tooltip);
-
-        // Animate tooltip
-        requestAnimationFrame(() => {
-            tooltip.style.opacity = '1';
-
-            setTimeout(() => {
-                tooltip.style.opacity = '0';
-                setTimeout(() => tooltip.remove(), 200);
-            }, 1000);
-        });
-
-        // Brief visual feedback on the element
-        element.style.transition = 'transform 0.1s ease';
-        element.style.transform = 'scale(0.98)';
-
-        setTimeout(() => {
-            element.style.transform = 'scale(1)';
-        }, 100);
-    }
-
-    // Add subtle hover styles and prevent text selection
-    const customStyles = document.createElement('style');
-    customStyles.textContent = `
-        .config-value {
-            cursor: pointer;
-            position: relative;
-            user-select: none;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-        }
-
-        .command-block {
-            cursor: pointer;
-            user-select: none;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-        }
-
-        /* Allow text selection only for password when visible */
-        .config-item:has(.password-container):hover .password-hidden {
-            user-select: text;
-            -webkit-user-select: text;
-            -moz-user-select: text;
-            -ms-user-select: text;
-        }
-    `;
-    document.head.appendChild(customStyles);
-
-    // Click to copy functionality for all config values except password
-    document.querySelectorAll('.config-value:not(.password-hidden)').forEach(element => {
-        element.addEventListener('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            const text = this.textContent.trim();
-            copyToClipboard(text, this);
-        });
-    });
-
-    // Click to copy functionality for command blocks
-    document.querySelectorAll('.command-block').forEach(element => {
-        element.addEventListener('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            const text = this.textContent.trim();
-            copyToClipboard(text, this);
-        });
-    });
-
-    // Special handling for password field - only copy when visible
-    const passwordEl = document.querySelector('.config-value.password-hidden');
-    if (passwordEl) {
-        passwordEl.addEventListener('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            // Check if password is currently visible (parent config-item is being hovered)
-            const configItem = this.closest('.config-item');
-            if (configItem && configItem.matches(':hover')) {
-                const text = this.textContent.trim();
-                copyToClipboard(text, this);
-            }
-        });
-    }
-
-    // Prevent double-click text selection
-    document.addEventListener('mousedown', function(e) {
-        if (e.target.classList.contains('config-value') || e.target.classList.contains('command-block')) {
-            e.preventDefault();
-        }
-    });
-</script><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -328,6 +163,7 @@
             color: #64748b;
             font-size: 0.9em;
             margin-bottom: 10px;
+            text-align: justify;
         }
 
         .note {
@@ -549,7 +385,7 @@
                 gap: 8px;
             }
 
-            .config-value {
+            .config-value, .password-value {
                 width: 100%;
                 text-align: center;
             }
@@ -585,7 +421,7 @@
             <h2 class="section-title">Configuration</h2>
             <div class="config-grid">
                 <div class="config-item">
-                    <span class="config-label">Server</span>
+                    <span class="config-label">Server Address</span>
                     <span class="config-value">sages.link</span>
                 </div>
                 <div class="config-item">
@@ -599,26 +435,31 @@
                     </div>
                 </div>
                 <div class="config-item">
-                    <span class="config-label">SSH Port</span>
-                    <span class="config-value">{{SSH_PORT}}</span>
-                </div>
-                <div class="config-item">
                     <span class="config-label">RDP Port</span>
                     <span class="config-value">{{RDP_PORT}}</span>
+                </div>
+                <div class="config-item">
+                    <span class="config-label">SSH Port</span>
+                    <span class="config-value">{{SSH_PORT}}</span>
                 </div>
             </div>
         </div>
 
         <div class="section">
-            <h2 class="section-title">SSH Connection</h2>
-            <p class="command-desc">Open a terminal and execute the command:</p>
-            <div class="command-block">ssh -p {{SSH_PORT}} {{USERNAME}}@sages.link</div>
+            <h2 class="section-title">Remote Desktop Connection</h2>
+            <p class="command-desc">
+                Launch your RDP client, such as the "Remote Desktop Connection" application on Windows, and enter the computer address below. The client allows you to save your login and password, which simplifies subsequent logins. Before connecting to the virtual machine, please read and accept the displayed terms of service - click the "Accept" button.
+            </p>
+            <p class="command-desc">
+                The RDP protocol is very efficient, however, for connections with limited bandwidth, it is recommended to reduce the screen resolution and decrease the color depth ("Display" tab), which significantly improves interface responsiveness. Remote desktop connection enables sharing clipboard and copying text and files between your local computer and the virtual machine. After finishing your work, you should log out or simply close the connection window.
+            </p>
+            <div class="command-block">sages.link:{{RDP_PORT}}</div>
         </div>
 
         <div class="section">
-            <h2 class="section-title">Remote Desktop Connection</h2>
-            <p class="command-desc">Open your RDP client and enter the computer address:</p>
-            <div class="command-block">sages.link:{{RDP_PORT}}</div>
+            <h2 class="section-title">SSH Connection</h2>
+            <p class="command-desc">Open your terminal and execute the command:</p>
+            <div class="command-block">ssh -p {{SSH_PORT}} {{USERNAME}}@sages.link</div>
         </div>
 
         <div class="warning-box">
@@ -626,28 +467,28 @@
             <div class="warning-content">
                 <ul>
                     <li>Access credentials are confidential - do not share them with third parties</li>
-                    <li>Use of the virtual machine is subject to the regulations below</li>
+                    <li>Virtual machine usage is subject to the terms of service below</li>
                     <li>All activity may be monitored for security purposes</li>
                 </ul>
             </div>
         </div>
 
         <div class="regulations-section">
-            <h2 class="regulations-title">Regulations for Using Virtual Machines During Training</h2>
+            <h2 class="regulations-title">Terms of Service for Virtual Machines During Training</h2>
             <div class="regulations-content">
-                <p><strong>Version: 1.0 – effective from 1 January 2025</strong></p>
+                <p><strong>Version: 1.0 – Effective from January 1, 2025</strong></p>
 
                 <h2>§ 1. General Provisions</h2>
                 <ol>
-                    <li>These Regulations define the rules for using virtual machines (hereinafter: “VM”) provided by the training instructor (hereinafter: the “Administrator”) to participants of training courses (hereinafter: the “User”).</li>
-                    <li>Each User is required to read these Regulations before starting to use the VM and to accept them through the login system.</li>
-                    <li>If the User does not accept the Regulations, an SSH/RDP connection to the virtual machine cannot be established.</li>
+                    <li>These Terms of Service define the rules for using virtual machines (hereinafter: "VM") provided by the training instructor (hereinafter: "Administrator") to training participants (hereinafter: "User").</li>
+                    <li>Each User is required to familiarize themselves with the Terms of Service before starting to use the VM and to accept them through the login system.</li>
+                    <li>Failure to accept the Terms of Service prevents establishing an SSH/RDP connection to the virtual machine.</li>
                 </ol>
 
                 <h2>§ 2. Access Rules</h2>
                 <ol>
-                    <li>Access to the VM is granted solely for the duration of the training and for educational purposes related to the training curriculum.</li>
-                    <li>Each User receives individual access credentials (login such as <em>student1</em>, <em>student2</em>, etc. and a password) sent to the e‑mail address provided.</li>
+                    <li>VM access is granted exclusively for the duration of the training and for educational purposes related to the training program.</li>
+                    <li>Each User receives individual access credentials (login such as: <em>student1</em>, <em>student2</em> etc. and password) sent to the specified email address.</li>
                     <li>Access credentials are confidential and may not be shared with third parties.</li>
                     <li>Access is provided through a proxy server that logs all connections.</li>
                 </ol>
@@ -655,131 +496,131 @@
                 <h2>§ 3. Permitted Use</h2>
                 <p>The User may use the VM exclusively for:</p>
                 <ul>
-                    <li>completing tasks and exercises specified in the training programme,</li>
-                    <li>installing software necessary to perform the training exercises,</li>
-                    <li>testing solutions within the scope of the training topics.</li>
+                    <li>completing tasks and exercises provided in the training program,</li>
+                    <li>installing software necessary for training exercises,</li>
+                    <li>testing solutions within the scope of the training topic.</li>
                 </ul>
 
-                <h2>§ 4. Prohibited Activities</h2>
+                <h2>§ 4. Prohibited Actions</h2>
                 <ol>
-                    <li><strong>Security‑related:</strong>
+                    <li><strong>Security-related:</strong>
                         <ul>
-                            <li>conducting any network attacks (DDoS, brute‑force, port scanning),</li>
-                            <li>attempting unauthorised access to other systems,</li>
+                            <li>conducting any network attacks (DDoS, brute-force, port scanning),</li>
+                            <li>attempting unauthorized access to other systems,</li>
                             <li>installing or distributing malicious software,</li>
-                            <li>activities aimed at bypassing system security measures.</li>
+                            <li>actions aimed at bypassing system security.</li>
                         </ul>
                     </li>
                     <li><strong>Legal compliance:</strong>
                         <ul>
-                            <li>using the VM for any illegal activity,</li>
-                            <li>infringing copyrights or licence terms,</li>
+                            <li>using VM for any illegal activities,</li>
+                            <li>violating copyright or licensing rights,</li>
                             <li>storing or sharing illegal content,</li>
-                            <li>conducting commercial activity.</li>
+                            <li>conducting commercial activities.</li>
                         </ul>
                     </li>
                     <li><strong>Ethical conduct:</strong>
                         <ul>
-                            <li>using VM resources for purposes unrelated to the training,</li>
-                            <li>actions that may disrupt the work of other Users,</li>
-                            <li>modifying system settings without the Administrator’s consent.</li>
+                            <li>using VM resources for purposes unrelated to training,</li>
+                            <li>actions that may disrupt other Users' work,</li>
+                            <li>modifying system settings without Administrator's consent.</li>
                         </ul>
                     </li>
                 </ol>
 
                 <h2>§ 5. Monitoring and Logging</h2>
                 <ol>
-                    <li>The Administrator records:
+                    <li>The Administrator logs:
                         <ul>
                             <li>all SSH/RDP connections (date, time, user),</li>
-                            <li>acceptance of the Regulations by each User,</li>
-                            <li>the source IP address of the connection,</li>
+                            <li>acceptance of terms of service by each User,</li>
+                            <li>source IP address of connection,</li>
                             <li>basic system activity.</li>
                         </ul>
                     </li>
-                    <li>The purposes of logging are:
+                    <li>Logging purposes:
                         <ul>
-                            <li>to ensure infrastructure security,</li>
-                            <li>to demonstrate Users’ compliance with the rules,</li>
-                            <li>to protect against legal claims.</li>
+                            <li>ensuring infrastructure security,</li>
+                            <li>ability to demonstrate compliance with rules by Users,</li>
+                            <li>protection against legal claims.</li>
                         </ul>
                     </li>
                 </ol>
 
                 <h2>§ 6. Liability</h2>
                 <ol>
-                    <li>The User is fully liable for:
+                    <li>The User bears full responsibility for:
                         <ul>
-                            <li>all actions performed using the assigned credentials,</li>
-                            <li>damages resulting from breaches of these Regulations,</li>
-                            <li>the legal consequences of their actions.</li>
+                            <li>all actions performed using assigned access credentials,</li>
+                            <li>damages resulting from violation of the Terms of Service,</li>
+                            <li>legal consequences of their actions.</li>
                         </ul>
                     </li>
                     <li>The Administrator is not liable for:
                         <ul>
-                            <li>the User’s actions that are unlawful or violate the Regulations,</li>
+                            <li>User actions that violate the law or Terms of Service,</li>
                             <li>loss of data entered by the User,</li>
-                            <li>interruptions in access caused by maintenance.</li>
+                            <li>access interruptions due to necessary maintenance.</li>
                         </ul>
                     </li>
-                    <li>The User undertakes to:
+                    <li>The User agrees to:
                         <ul>
-                            <li>hold the Administrator harmless from any liability related to the User’s actions,</li>
-                            <li>cover any damages resulting from breaches of the Regulations.</li>
+                            <li>release the Administrator from any liability related to their actions,</li>
+                            <li>cover any damages resulting from violation of the Terms of Service.</li>
                         </ul>
                     </li>
                 </ol>
 
                 <h2>§ 7. Sanctions</h2>
-                <p>If the Regulations are breached, the Administrator may:</p>
+                <p>In case of violation of the Terms of Service, the Administrator may:</p>
                 <ol>
-                    <li>immediately block access to the VM,</li>
-                    <li>exclude the User from the training without refund,</li>
-                    <li>notify the relevant law‑enforcement authorities,</li>
-                    <li>seek compensation through legal proceedings.</li>
+                    <li>immediately block access to VM,</li>
+                    <li>exclude the User from training without refund,</li>
+                    <li>notify appropriate law enforcement authorities,</li>
+                    <li>seek damages through legal action.</li>
                 </ol>
 
                 <h2>§ 8. Personal Data Protection</h2>
                 <ol>
-                    <li><strong>Data controller:</strong>
-                        <p>SAGES Sp. z o.o., ul. Nowogrodzka 62c, 00‑695 Warsaw, Poland<br>
+                    <li><strong>Data Controller:</strong>
+                        <p>SAGES Sp. z o.o. with registered office in Warsaw at Nowogrodzka 62c<br>
                             Contact: <a href="mailto:iod@sages.pl">iod@sages.pl</a></p>
                     </li>
-                    <li><strong>Scope of data processed:</strong>
+                    <li><strong>Scope of processed data:</strong>
                         <ul>
-                            <li>system login (<em>student1</em>, <em>student2</em>, etc.),</li>
-                            <li>e‑mail address (for sending access credentials),</li>
+                            <li>system login (<em>student1</em>, <em>student2</em> etc.),</li>
+                            <li>email address (for sending access credentials),</li>
                             <li>connection IP address,</li>
-                            <li>date and time of acceptance of the Regulations.</li>
+                            <li>date and time of Terms of Service acceptance.</li>
                         </ul>
                     </li>
                     <li><strong>Legal basis:</strong>
                         <ul>
-                            <li>Article 6(1)(f) GDPR – legitimate interest of the controller (infrastructure security),</li>
-                            <li>Article 6(1)(b) GDPR – performance of the training agreement.</li>
+                            <li>Art. 6(1)(f) GDPR – legitimate interest of the controller (infrastructure security),</li>
+                            <li>Art. 6(1)(b) GDPR – performance of training contract.</li>
                         </ul>
                     </li>
-                    <li><strong>Retention period:</strong>
+                    <li><strong>Data retention period:</strong>
                         <ul>
-                            <li>system logs: 90 days after the end of the training,</li>
-                            <li>contact data: until consent is withdrawn.</li>
+                            <li>system logs: 90 days from training completion,</li>
+                            <li>contact data: until consent withdrawal.</li>
                         </ul>
                     </li>
                     <li><strong>User rights:</strong>
                         <ul>
                             <li>access to data,</li>
-                            <li>rectification or deletion of data,</li>
-                            <li>filing a complaint with the Polish Data Protection Authority (PUODO).</li>
+                            <li>correction or deletion of data,</li>
+                            <li>filing a complaint with the supervisory authority.</li>
                         </ul>
                     </li>
                 </ol>
 
                 <h2>§ 9. Final Provisions</h2>
                 <ol>
-                    <li>Acceptance of the Regulations takes place by entering the appropriate command or confirming them during login to the VM.</li>
-                    <li>The Administrator reserves the right to amend the Regulations; Users will be notified of any changes.</li>
-                    <li>Any matters not regulated by these Regulations are governed by Polish law.</li>
-                    <li>Any disputes shall be settled by the court with jurisdiction over the Administrator’s registered office.</li>
+                    <li>Acceptance of the Terms of Service occurs by entering the appropriate command or confirming it during login to the VM.</li>
+                    <li>The Administrator reserves the right to change the Terms of Service; Users will be notified of changes.</li>
+                    <li>In matters not regulated, Polish law shall apply.</li>
+                    <li>Any disputes shall be resolved by the court competent for the Administrator's registered office.</li>
                 </ol>
             </div>
         </div>
@@ -803,86 +644,123 @@
 <script>
     // Function to copy text to clipboard and show feedback
     function copyToClipboard(text, element) {
-        navigator.clipboard.writeText(text).then(function() {
-            // Show success feedback with subtle animation
-            const originalBg = window.getComputedStyle(element).backgroundColor;
-            const originalTransition = element.style.transition;
+        // Clear any existing selection to prevent text highlighting
+        window.getSelection().removeAllRanges();
 
-            // Create and show tooltip
-            const tooltip = document.createElement('div');
-            tooltip.textContent = 'Copied!';
-            tooltip.style.cssText = `
-                position: fixed;
-                background: #059669;
-                color: white;
-                padding: 6px 12px;
-                border-radius: 4px;
-                font-size: 0.8em;
-                font-weight: 500;
-                z-index: 10000;
-                pointer-events: none;
-                opacity: 0;
-                transition: opacity 0.2s ease;
-            `;
+        // Focus the document before copying
+        if (!document.hasFocus()) {
+            window.focus();
+        }
 
-            // Position tooltip above the element
-            const rect = element.getBoundingClientRect();
-            tooltip.style.left = (rect.left + rect.width / 2) + 'px';
-            tooltip.style.top = (rect.top - 35) + 'px';
-            tooltip.style.transform = 'translateX(-50%)';
-
-            document.body.appendChild(tooltip);
-
-            // Animate tooltip
-            requestAnimationFrame(() => {
-                tooltip.style.opacity = '1';
-
-                setTimeout(() => {
-                    tooltip.style.opacity = '0';
-                    setTimeout(() => tooltip.remove(), 200);
-                }, 1000);
+        // Try modern clipboard API first, then fallback
+        if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(text).then(function() {
+                showCopyFeedback(element, 'Copied!');
+            }).catch(function(err) {
+                // Fallback method
+                copyUsingExecCommand(text, element);
             });
-
-            // Subtle background flash
-            element.style.transition = 'background-color 0.2s ease';
-            element.style.backgroundColor = 'rgba(16, 185, 129, 0.1)';
-
-            setTimeout(() => {
-                element.style.backgroundColor = originalBg;
-                setTimeout(() => {
-                    element.style.transition = originalTransition;
-                }, 200);
-            }, 200);
-
-        }).catch(function(err) {
-            console.error('Failed to copy: ', err);
-            // Fallback to select text
-            const selection = window.getSelection();
-            const range = document.createRange();
-            range.selectNodeContents(element);
-            selection.removeAllRanges();
-            selection.addRange(range);
-        });
+        } else {
+            // Use fallback for older browsers or non-secure contexts
+            copyUsingExecCommand(text, element);
+        }
     }
 
-    // Add subtle hover styles
+    // Fallback copy method
+    function copyUsingExecCommand(text, element) {
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        textArea.style.position = 'fixed';
+        textArea.style.left = '-999999px';
+        textArea.style.top = '-999999px';
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+
+        try {
+            document.execCommand('copy');
+            showCopyFeedback(element, 'Copied!');
+        } catch (err) {
+            console.error('Failed to copy: ', err);
+            alert('Failed to copy to clipboard. Please copy manually.');
+        } finally {
+            textArea.remove();
+        }
+    }
+
+    // Show visual feedback after copying
+    function showCopyFeedback(element, message) {
+        // Create and show tooltip
+        const tooltip = document.createElement('div');
+        tooltip.textContent = message;
+        tooltip.style.cssText = `
+            position: fixed;
+            background: #0F172AFF;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            font-weight: 500;
+            z-index: 10000;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        `;
+
+        // Position tooltip above the element
+        const rect = element.getBoundingClientRect();
+        tooltip.style.left = (rect.left + rect.width / 2) + 'px';
+        tooltip.style.top = (rect.top - 35) + 'px';
+        tooltip.style.transform = 'translateX(-50%)';
+
+        document.body.appendChild(tooltip);
+
+        // Animate tooltip
+        requestAnimationFrame(() => {
+            tooltip.style.opacity = '1';
+
+            setTimeout(() => {
+                tooltip.style.opacity = '0';
+                setTimeout(() => tooltip.remove(), 200);
+            }, 1000);
+        });
+
+        // Brief visual feedback on the element
+        element.style.transition = 'transform 0.1s ease';
+        element.style.transform = 'scale(0.98)';
+
+        setTimeout(() => {
+            element.style.transform = 'scale(1)';
+        }, 100);
+    }
+
+    // Add subtle hover styles and prevent text selection
     const style = document.createElement('style');
     style.textContent = `
         .config-value {
             cursor: pointer;
             position: relative;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
         }
 
         .command-block {
             cursor: pointer;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
         }
 
-        .config-value:hover {
-            background: white !important;
-        }
-
-        .command-block:hover {
-            background: #1e293b !important;
+        /* Allow text selection only for password when visible */
+        .config-item:has(.password-container):hover .password-hidden {
+            user-select: text;
+            -webkit-user-select: text;
+            -moz-user-select: text;
+            -ms-user-select: text;
         }
     `;
     document.head.appendChild(style);
@@ -890,6 +768,7 @@
     // Click to copy functionality for all config values except password
     document.querySelectorAll('.config-value:not(.password-hidden)').forEach(element => {
         element.addEventListener('click', function(e) {
+            e.preventDefault();
             e.stopPropagation();
             const text = this.textContent.trim();
             copyToClipboard(text, this);
@@ -899,6 +778,7 @@
     // Click to copy functionality for command blocks
     document.querySelectorAll('.command-block').forEach(element => {
         element.addEventListener('click', function(e) {
+            e.preventDefault();
             e.stopPropagation();
             const text = this.textContent.trim();
             copyToClipboard(text, this);
@@ -906,13 +786,10 @@
     });
 
     // Special handling for password field - only copy when visible
-    const passwordElement = document.querySelector('.config-value.password-hidden');
-    if (passwordElement) {
-        // Remove any existing click handlers first
-        const newPasswordElement = passwordElement.cloneNode(true);
-        passwordElement.parentNode.replaceChild(newPasswordElement, passwordElement);
-
-        newPasswordElement.addEventListener('click', function(e) {
+    const passwordEl = document.querySelector('.config-value.password-hidden');
+    if (passwordEl) {
+        passwordEl.addEventListener('click', function(e) {
+            e.preventDefault();
             e.stopPropagation();
             // Check if password is currently visible (parent config-item is being hovered)
             const configItem = this.closest('.config-item');
@@ -922,6 +799,13 @@
             }
         });
     }
+
+    // Prevent double-click text selection
+    document.addEventListener('mousedown', function(e) {
+        if (e.target.classList.contains('config-value') || e.target.classList.contains('command-block')) {
+            e.preventDefault();
+        }
+    });
 </script>
 </body>
 </html>

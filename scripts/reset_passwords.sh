@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Function to display usage
 show_usage() {
     echo "Usage: $0 [--lang pl|en] <number_of_students> OR $0 [--lang pl|en] <start> <end>"
@@ -59,7 +61,7 @@ XTUNNEL_HOST="sages.link"
 # Function to generate random password (8 characters: letters and digits)
 generate_password() {
     # Fix for macOS "Illegal byte sequence" error
-    LC_ALL=C tr -dc 'A-Za-z0-9!&@%$' < /dev/urandom | head -c 10
+    LC_ALL=C tr -dc 'A-Za-z0-9!@%$' < /dev/urandom | head -c 10
 }
 
 # Function to read current password from file
@@ -168,11 +170,11 @@ change_user_password() {
         -o PreferredAuthentications=password \
         -p "$ssh_port" \
         "$username"@"$XTUNNEL_HOST" \
-        "printf '%s\n%s\n%s\n' '$old_password' '$new_password' '$new_password' | passwd"
+        "printf '%s\n%s\n%s\n' '$old_password' '$new_password' '$new_password' | passwd && rm -f ~/.policy_accepted ~/.xrdp_policy_accepted"
 
     local ssh_result=$?
     if [ $ssh_result -eq 0 ]; then
-        echo "Successfully updated password for $username via $XTUNNEL_HOST:$ssh_port"
+        echo "Successfully updated password and removed policy files for $username via $XTUNNEL_HOST:$ssh_port"
         return 0
     else
         echo "Failed to update password for $username via $XTUNNEL_HOST:$ssh_port"
@@ -227,10 +229,8 @@ for ((i=START_NUM; i<=END_NUM; i++)); do
 done
 
 echo ""
-echo "Script completed!"
 echo "Summary:"
 echo "  Successful password changes: $SUCCESSFUL"
 echo "  Failed password changes: $FAILED"
 echo "  Total processed: $((SUCCESSFUL + FAILED))"
 echo ""
-echo "Check the credentials/ directory for password files"

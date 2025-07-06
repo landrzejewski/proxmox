@@ -163,6 +163,7 @@
             color: #64748b;
             font-size: 0.9em;
             margin-bottom: 10px;
+            text-align: justify;
         }
 
         .note {
@@ -420,7 +421,7 @@
             <h2 class="section-title">Konfiguracja</h2>
             <div class="config-grid">
                 <div class="config-item">
-                    <span class="config-label">Serwer</span>
+                    <span class="config-label">Adres serwera</span>
                     <span class="config-value">sages.link</span>
                 </div>
                 <div class="config-item">
@@ -434,26 +435,37 @@
                     </div>
                 </div>
                 <div class="config-item">
-                    <span class="config-label">Port SSH</span>
-                    <span class="config-value">{{SSH_PORT}}</span>
-                </div>
-                <div class="config-item">
                     <span class="config-label">Port RDP</span>
                     <span class="config-value">{{RDP_PORT}}</span>
                 </div>
+                <div class="config-item">
+                    <span class="config-label">Port SSH</span>
+                    <span class="config-value">{{SSH_PORT}}</span>
+                </div>
             </div>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">Połączenie pulpitu zdalnego</h2>
+            <p class="command-desc">
+            Uruchom klienta RDP, na przykład aplikację „Podłączenie pulpitu zdalnego” w systemie Windows, a następnie
+            wpisz poniższy adres komputera. Klient umożliwia zapisanie loginu i hasła, co upraszcza kolejne logowania.
+            Zanim połączysz się z maszyną wirtualną przeczytaj i zaakceptuj wyświetlony regulamin - przycisk „Akceptuj”.
+            </p>
+            <p class="command-desc">
+            Protokół RDP jest bardzo wydajny, jednak w przypadku łącza o ograniczonej
+            przepustowości zaleca się obniżenie rozdzielczości ekranu oraz zmniejszenie głębi kolorów (zakładka „Ekran”), co znacząco
+            poprawia responsywność interfejsu. Połączenie pulpitu zdalnego umożliwia korzystanie ze wspólnego
+            schowka oraz kopiowanie tekstu i plików między lokalnym komputerem a maszyną wirtualną. Po zakończeniu pracy
+            należy się wylogować lub po prostu zamknąć okno połączenia.
+            </p>
+            <div class="command-block">sages.link:{{RDP_PORT}}</div>
         </div>
 
         <div class="section">
             <h2 class="section-title">Połączenie SSH</h2>
             <p class="command-desc">Otwórz terminal i wykonaj polecenie:</p>
             <div class="command-block">ssh -p {{SSH_PORT}} {{USERNAME}}@sages.link</div>
-        </div>
-
-        <div class="section">
-            <h2 class="section-title">Połączenie do pulpitu zdalnego</h2>
-            <p class="command-desc">Otwórz klienta RDP i wprowadź adres komputera:</p>
-            <div class="command-block">sages.link:{{RDP_PORT}}</div>
         </div>
 
         <div class="warning-box">
