@@ -37,8 +37,8 @@ apt update && apt install -y \
     software-properties-common \
     nfs-common \
     yad \
-    firefox \
-    chromium-browser
+    firefox-esr \
+    chromium
 
 # === Install ZeroTier ===
 curl -s https://install.zerotier.com | bash
@@ -53,7 +53,7 @@ sed -i "s/127.0.1.1.*/127.0.1.1\t$HOST_NAME/" /etc/hosts
 echo "root:$ROOT_PASSWORD" | chpasswd
 
 # === Remove existing default users ===
-for DEFAULT_USER in user ubuntu; do
+for DEFAULT_USER in user debian; do
   if id "$DEFAULT_USER" &>/dev/null; then
     pkill -u "$DEFAULT_USER" 2>/dev/null
     userdel -r "$DEFAULT_USER" && echo "[INFO] Removed default user '$DEFAULT_USER'"
@@ -105,12 +105,12 @@ systemctl restart fail2ban
 apt-get update -y
 apt-get install ca-certificates curl -y
 install -m 0755 -d /etc/apt/keyrings
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+curl -fsSL https://download.docker.com/linux/debian/gpg -o /etc/apt/keyrings/docker.asc
 chmod a+r /etc/apt/keyrings/docker.asc
 
 echo \
-  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
-  $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}") stable" | \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian \
+  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
   tee /etc/apt/sources.list.d/docker.list > /dev/null
 apt-get update
 
@@ -155,7 +155,12 @@ su - "$USER_NAME" -c "
 "
 
 # === Install Visual Studio Code ===
-snap install code --classic
+# For Debian, we'll use the official Microsoft repository instead of snap
+wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg
+install -o root -g root -m 644 packages.microsoft.gpg /etc/apt/trusted.gpg.d/
+echo "deb [arch=amd64,arm64,armhf signed-by=/etc/apt/trusted.gpg.d/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" > /etc/apt/sources.list.d/vscode.list
+apt update
+apt install code -y
 
 # === Policy ===
 cp -f ./policy.txt "$POLICY_FILE"
