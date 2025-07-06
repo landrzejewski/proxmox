@@ -1,15 +1,9 @@
 #!/bin/bash
 
-# === Validate input ===
-if [ "$#" -ne 4 ]; then
-  echo "Usage: $0 <hostname> <rootpassword> <USER_NAME> <userpassword>"
-  exit 1
-fi
-
 HOST_NAME="$1"
-ROOT_PASSWORD="$2"
-USER_NAME="$3"
-USER_PASSWORD="$4"
+ROOT_PASSWORD=""
+USER_NAME="$1"
+USER_PASSWORD="$1"
 ZEROTIER_NETWORK_ID="363c67c55a1018b2"
 POLICY_FILE="/etc/policy.txt"
 POLICY_ACCEPT_FILE="/etc/policy_accepted-$USER_NAME"
@@ -179,4 +173,6 @@ mkdir -p /mnt/shared
 cp ./archive_logs.sh /root
 chmod +x /root/archive_logs.sh
 
+rm -rf ~/proxmox
 history -c
+shutdown -r now
