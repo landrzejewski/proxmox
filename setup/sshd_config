@@ -29,3 +29,5 @@ PermitEmptyPasswords no
 
 # Log more verbosely
 LogLevel VERBOSE
+
+Subsystem sftp /usr/lib/openssh/sftp-server
