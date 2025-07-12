@@ -127,13 +127,13 @@ chown "$USER_NAME":"$USER_NAME" /home/"$USER_NAME"/.bashrc
 
 # === Install SDKMAN and Java ===
 su - "$USER_NAME" -c 'curl -s "https://get.sdkman.io" | bash'
-su - "$USER_NAME" -c '
-  source "$HOME/.sdkman/bin/sdkman-init.sh"
-  sdk install java
-  sdk default java $(sdk list java | grep -E "installed|>" | head -1 | awk "{print \$NF}")
-'
 echo 'export SDKMAN_DIR="$HOME/.sdkman"' >> /home/"$USER_NAME"/.bashrc
 echo '[ -s "$SDKMAN_DIR/bin/sdkman-init.sh" ] && \. "$SDKMAN_DIR/bin/sdkman-init.sh"' >> /home/"$USER_NAME"/.bashrc
+su - "$USER_NAME" -c '
+  source "$HOME/.sdkman/bin/sdkman-init.sh"
+  sdk install java 24-tem
+  sdk default java 24-tem
+'
 
 # === Install IntelliJ IDEA ===
 INTELLIJ_URL=$(curl -s https://data.services.jetbrains.com/products/releases?code=IIU\&latest=true\&type=release \
