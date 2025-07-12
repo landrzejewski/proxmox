@@ -34,19 +34,18 @@ apt update && apt install -y \
     firefox-esr \
     chromium
 
-# === Install ZeroTier ===
+# === ZeroTier ===
 curl -s https://install.zerotier.com | bash
 zerotier-cli join "$ZEROTIER_NETWORK_ID"
 
-# === Set hostname ===
+# === Hostname ===
 hostnamectl set-hostname "$HOST_NAME"
 echo "$HOST_NAME" > /etc/hostname
 sed -i "s/127.0.1.1.*/127.0.1.1\t$HOST_NAME/" /etc/hosts
 
-# === Set root password ===
+# === Users ===
 echo "root:$ROOT_PASSWORD" | chpasswd
 
-# === Remove existing default users ===
 for DEFAULT_USER in user debian; do
   if id "$DEFAULT_USER" &>/dev/null; then
     pkill -u "$DEFAULT_USER" 2>/dev/null
@@ -55,19 +54,18 @@ for DEFAULT_USER in user debian; do
   fi
 done
 
-# === Create user ===
 if ! id "$USER_NAME" &>/dev/null; then
   useradd -m -s /bin/bash "$USER_NAME"
   echo "$USER_NAME:$USER_PASSWORD" | chpasswd
   usermod -aG sudo "$USER_NAME"
 fi
 
-# === Configure SSH ===
+# === SSH ===
 cp -f ./sshd_config /etc/ssh/
 systemctl enable ssh
 systemctl restart ssh
 
-# === Configure XRDP ===
+# === XRDP ===
 echo xfce4-session > /home/"$USER_NAME"/.xsession
 chown "$USER_NAME":"$USER_NAME" /home/"$USER_NAME"/.xsession
 adduser "$USER_NAME" ssl-cert
@@ -95,7 +93,7 @@ cp -f ./jail.local /etc/fail2ban/
 systemctl enable fail2ban
 systemctl restart fail2ban
 
-# === Install Docker ===
+# === Docker ===
 apt-get update -y
 apt-get install ca-certificates curl -y
 install -m 0755 -d /etc/apt/keyrings
@@ -112,7 +110,7 @@ apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docke
 
 usermod -aG docker "$USER_NAME"
 
-# === Install NVM and Node.js ===
+# === NVM and Node.js ===
 su - "$USER_NAME" -c 'curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/master/install.sh | bash >/dev/null 2>&1'
 su - "$USER_NAME" -c '
   export NVM_DIR="$HOME/.nvm"
@@ -125,7 +123,7 @@ echo 'export NVM_DIR="$HOME/.nvm"' >> /home/"$USER_NAME"/.bashrc
 echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' >> /home/"$USER_NAME"/.bashrc
 chown "$USER_NAME":"$USER_NAME" /home/"$USER_NAME"/.bashrc
 
-# === Install SDKMAN and Java ===
+# === SDKMAN and Java ===
 su - "$USER_NAME" -c 'curl -s "https://get.sdkman.io" | bash'
 echo 'export SDKMAN_DIR="$HOME/.sdkman"' >> /home/"$USER_NAME"/.bashrc
 echo '[ -s "$SDKMAN_DIR/bin/sdkman-init.sh" ] && \. "$SDKMAN_DIR/bin/sdkman-init.sh"' >> /home/"$USER_NAME"/.bashrc
@@ -135,7 +133,7 @@ su - "$USER_NAME" -c '
   sdk default java 24-tem
 '
 
-# === Install IntelliJ IDEA ===
+# === IntelliJ IDEA ===
 INTELLIJ_URL=$(curl -s https://data.services.jetbrains.com/products/releases?code=IIU\&latest=true\&type=release \
   | grep -oP '(?<="linux":\{"link":")[^"]+' | head -1)
 
@@ -148,8 +146,7 @@ su - "$USER_NAME" -c "
   rm idea.tar.gz
 "
 
-# === Install Visual Studio Code ===
-# For Debian, we'll use the official Microsoft repository instead of snap
+# === Visual Studio Code ===
 wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg
 install -o root -g root -m 644 packages.microsoft.gpg /etc/apt/trusted.gpg.d/
 echo "deb [arch=amd64,arm64,armhf signed-by=/etc/apt/trusted.gpg.d/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" > /etc/apt/sources.list.d/vscode.list
